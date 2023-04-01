@@ -46,14 +46,23 @@ describe('publish() 方法', () => {
     expect(author).toEqual('Robert Yao')
     expect(career).toEqual('programmer')
     expect(careerCount).toEqual(1)
+
+    publish('author.career.years', PAYLOAD)
+
+    expect(yearsCount).toEqual(1)
+    expect(years).toEqual(20)
+    expect(authorCount).toEqual(3)
+    expect(author).toEqual('Robert Yao')
+    expect(career).toEqual('programmer')
+    expect(careerCount).toEqual(2)
   })
 
   it("publish('author.age'), author 主题有订阅者，age 主题无订阅者：", () => {
     publish('author.age', PAYLOAD)
 
-    expect(authorCount).toEqual(3)
+    expect(authorCount).toEqual(4)
     expect(author).toEqual('Robert Yao')
     expect(career).toEqual('programmer')
-    expect(careerCount).toEqual(1)
+    expect(careerCount).toEqual(2)
   })
 })

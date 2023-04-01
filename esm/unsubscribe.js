@@ -1,4 +1,5 @@
 import _subscribers from './_subscribers'
+import isFunction from './isFunction'
 import hasSubscribers from './hasSubscribers'
 import deleteSubscriber from './deleteSubscriber'
 
@@ -19,7 +20,7 @@ const unsubscribe = (topic, handler) => {
 
   subscription = _subscribers[topic]
 
-  if (handler) {
+  if (isFunction(handler)) {
     subscription.forEach((fn, i) => {
       if (fn === handler) {
         index = i

@@ -4,6 +4,20 @@ const hasOwn = (obj, prop) => {
   return Object.prototype.hasOwnProperty.call(obj, prop)
 }
 
+/**
+ * 检测测试数据是否为 Function 类型
+ * ========================================================================
+ * @method isFunction
+ * @param {*} val - （必须）待检测的数据
+ * @returns {Boolean} 'val' 是 Function 类型返回 true，否则返回 false
+ */
+const isFunction = (val) => {
+  return (
+    typeof val === 'function' ||
+    Object.prototype.toString.apply(val) === '[object Function]'
+  )
+}
+
 const hasDirectSubscribersFor = (topic) => {
   return hasOwn(_subscribers, topic) && _subscribers[topic].length > 0
 }
@@ -48,7 +62,18 @@ const publish = (topic, data) => {
   deliver(topic)
 }
 
+/**
+ * 订阅主题，并给出处理器函数
+ * ========================================================================
+ * @method subscribe
+ * @param {String} topic - 主题名称
+ * @param {Function} handler - 主题的处理器函数
+ */
 const subscribe = (topic, handler) => {
+  if (!isFunction(handler)) {
+    return false
+  }
+
   /* istanbul ignore else */
   if (!_subscribers[topic]) {
     _subscribers[topic] = []
@@ -67,7 +92,7 @@ const unsubscribe = (topic, handler) => {
 
   subscription = _subscribers[topic]
 
-  if (handler) {
+  if (isFunction(handler)) {
     subscription.forEach((fn, i) => {
       if (fn === handler) {
         index = i
