@@ -1,0 +1,73 @@
+{
+  "name": "@yaohaixiao/subscribers.js",
+  "version": "0.1.0",
+  "description": "又一个小巧简单而且实用的发布/订阅 JavaScript 工具库！",
+  "main": "dist/subscribers.min.js",
+  "scripts": {
+    "build": "gulp build",
+    "lint": "eslint",
+    "lint:fix": "npm run lint --cache --fix",
+    "prettier:check": "npx prettier --check \"**/**/*.js\"",
+    "prettier:write": "npx prettier --write \"**/**/*.js\"",
+    "test:unit": "jest --config jest.config.js",
+    "test": "npm run lint:fix && npm run prettier:write && npm run test:unit",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yaohaixiao/subscribers.js.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "publish",
+    "subscribe",
+    "Pub/Sub",
+    "subscribers"
+  ],
+  "author": "Robert Yao",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yaohaixiao/subscribers.js/issues"
+  },
+  "homepage": "https://github.com/yaohaixiao/subscribers.js#readme",
+  "devDependencies": {
+    "@babel/core": "^7.21.0",
+    "@babel/preset-env": "^7.14.8",
+    "@commitlint/cli": "^17.4.4",
+    "@commitlint/config-conventional": "^17.4.4",
+    "babel-jest": "^29.5.0",
+    "commitlint": "^17.4.4",
+    "conventional-changelog-cli": "^2.2.2",
+    "eslint": "^8.34.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-import-resolver-jest": "^3.0.2",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean": "^0.4.0",
+    "gulp-eslint": "^6.0.0",
+    "gulp-livereload": "^4.0.2",
+    "gulp-plumber": "^1.2.1",
+    "gulp-prettier": "^4.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-uglify": "^3.0.2",
+    "gulp-umd": "^2.0.0",
+    "gulp-watch": "^5.0.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.2",
+    "jest-html-reporter": "^3.7.0",
+    "prettier": "^2.8.4"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged",
+    "commit-msg": "commitlint"
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "npm run lint:fix",
+      "npm run prettier:write"
+    ]
+  }
+}
