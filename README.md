@@ -66,19 +66,34 @@ import Subscribers from '@yaohaixiao/esm/subscribers'
 ## Usage
 
 ```js
+import Subscribers from '@yaohaixiao/subscribers.js'
+
 // 创建订阅主题的函数
 const handler = (msg, data) => {
     console.log( msg, data )
 }
 
+/* 订阅主题 */
 // 将函数添加到特定主题的订阅者列表中
 Subscribers.subscribe('log', handler)
+// 采用命名空间式的消息主题
+Subscribers.subscribe('log.info', handler)
+Subscribers.subscribe('log.info.update', handler)
 
-// 发布一个（名为：log）消息
+* 发布主题 */
+// 发布一个（名为：log）消息，log 会触发
 Subscribers.publish('log', 'hello world!')
+// log/log.info/log.info.update 主题的处理器函数都将执行
+Subscribers.publish('log.info.update', `hello world! it's update!`)
 
+/* 取消订阅 */
 // 将 handler 函数从 log 主题中订阅者列表中移除
 Subscribers.unsubscribe('log', handler)
+
+const token = Subscribers.subscribe('alert', handler)
+
+// 将 handler 函数从 alert 主题中订阅者列表中移除
+Subscribers.unsubscribe('alert', token)
 
 // 移除 log 主题及订阅者列表
 Subscribers.unsubscribe('log')
