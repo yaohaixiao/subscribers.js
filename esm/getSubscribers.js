@@ -14,15 +14,15 @@ const getSubscribers = (topic) => {
   const subscribers = []
 
   Object.keys(_subscribers).forEach((subscriber) => {
-    const subscription = {}
+    const observer = {}
 
     if(!topic) {
-      subscription[subscriber] = _subscribers[subscriber]
-      subscribers.push(subscription)
+      observer[subscriber] = _subscribers[subscriber]
+      subscribers.push(observer)
     } else {
       if (hasOwn(_subscribers, subscriber) && subscriber.indexOf(topic) === 0) {
-        subscription[subscriber] = _subscribers[subscriber]
-        subscribers.push(subscription)
+        observer[subscriber] = _subscribers[subscriber]
+        subscribers.push(observer)
       }
     }
   })

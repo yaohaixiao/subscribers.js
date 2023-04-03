@@ -1,10 +1,11 @@
 {
   "name": "@yaohaixiao/subscribers.js",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "又一个小巧简单而且实用的发布/订阅 JavaScript 工具库！",
   "main": "dist/subscribers.min.js",
   "scripts": {
     "build": "gulp build",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "lint": "eslint",
     "lint:fix": "npm run lint --cache --fix",
     "prettier:check": "npx prettier --check \"**/**/*.js\"",

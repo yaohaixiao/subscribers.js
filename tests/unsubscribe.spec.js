@@ -29,8 +29,8 @@ describe('unsubscribe() 方法', () => {
   subscribe('author.career', handlerCareer)
   subscribe('author.career.years', handlerYears)
 
-  describe('传递 topic 和 handler 两个参数:', () => {
-    it(`unsubscribe('author', handlerAuthor)：author 和 handlerAuthor 都有效`, () => {
+  describe('传递 topic 和 token 两个参数:', () => {
+    it(`unsubscribe('author', handlerAuthor)：author 和 handlerAuthor（token 为 Function 类型）都有效`, () => {
       let subscriptions = getSubscribers('author')
 
       expect(subscriptions.length).toEqual(3)
@@ -41,7 +41,26 @@ describe('unsubscribe() 方法', () => {
 
       expect(subscriptions.length).toEqual(2)
 
-      const result = publish('author', PAYLOAD)
+      let result = publish('author', PAYLOAD)
+
+      expect(result).toBe(false)
+      expect(author).toEqual('')
+      expect(authorCount).toEqual(0)
+    })
+
+    it(`unsubscribe('author', '1')：author 和 token（为 String 类型，唯一ID值） 都有效`, () => {
+      const token = subscribe('author', handlerAuthor)
+      let subscriptions = getSubscribers('author')
+
+      expect(subscriptions.length).toEqual(3)
+
+      unsubscribe('author', token)
+
+      subscriptions = getSubscribers('author')
+
+      expect(subscriptions.length).toEqual(2)
+
+      let result = publish('author', PAYLOAD)
 
       expect(result).toBe(false)
       expect(author).toEqual('')
@@ -81,9 +100,11 @@ describe('unsubscribe() 方法', () => {
       unsubscribe('author.career')
 
       const result = publish('author.career', PAYLOAD)
+      const subscribers = getSubscribers()
 
       expect(result).toBe(false)
       expect(deleteSubscriber('author.career')).toBe(false)
+      expect(subscribers.length).toEqual(1)
 
       publish('author.career.years', PAYLOAD)
 

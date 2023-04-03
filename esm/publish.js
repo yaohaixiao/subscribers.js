@@ -16,8 +16,8 @@ const publish = (topic, data) => {
       return false
     }
 
-    _subscribers[topic].forEach((handler) => {
-      handler(data)
+    _subscribers[topic].forEach((observer) => {
+      observer.callback(data)
     })
   }
   let subscriber = topic

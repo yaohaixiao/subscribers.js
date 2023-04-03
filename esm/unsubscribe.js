@@ -8,30 +8,34 @@ import deleteSubscriber from './deleteSubscriber'
  * ========================================================================
  * @method unsubscribe
  * @param {String} topic - （必须）订阅的主题
- * @param {Function} [handler] - （可选）订阅主题的处理器函数
+ * @param {Function|String} [token] - （可选）订阅主题的处理器函数
  */
-const unsubscribe = (topic, handler) => {
+const unsubscribe = (topic, token) => {
   let index = -1
-  let subscription = []
+  let subscriber = []
 
   if (!hasSubscribers(topic)) {
     return false
   }
 
-  subscription = _subscribers[topic]
+  subscriber = _subscribers[topic]
 
-  if (isFunction(handler)) {
-    subscription.forEach((fn, i) => {
-      if (fn === handler) {
+  if (token) {
+    subscriber.forEach((observer, i) => {
+      if (observer.callback === token && isFunction(token)) {
         index = i
+      } else {
+        if (observer.token === token && typeof token === 'string') {
+          index = i
+        }
       }
     })
 
     if (index > -1) {
-      subscription.splice(index, 1)
+      subscriber.splice(index, 1)
 
       /* istanbul ignore else */
-      if (subscription.length < 1) {
+      if (subscriber.length < 1) {
         deleteSubscriber(topic)
       }
     }

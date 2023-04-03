@@ -9,7 +9,7 @@ import unsubscribe from './unsubscribe'
  * @param {Function} handler - （必须）主题的处理器函数
  */
 const subscribeOnce = (topic, handler) => {
-  subscribe(topic, function () {
+  return subscribe(topic, function () {
     unsubscribe(topic, handler)
     handler.apply(this, arguments)
   })

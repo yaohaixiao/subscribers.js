@@ -6,10 +6,7 @@
  * @returns {Boolean} 'val' 是 Function 类型返回 true，否则返回 false
  */
 const isFunction = (val) => {
-  return (
-    typeof val === 'function' ||
-    Object.prototype.toString.apply(val) === '[object Function]'
-  )
+  return Object.prototype.toString.apply(val) === '[object Function]'
 }
 
 export default isFunction

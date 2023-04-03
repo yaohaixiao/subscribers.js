@@ -13,6 +13,17 @@ var _subscribers = {};
 var hasOwn = function hasOwn(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 };
+
+/**
+ * 检测测试数据是否为 Function 类型
+ * ========================================================================
+ * @method isFunction
+ * @param {*} val - （必须）待检测的数据
+ * @returns {Boolean} 'val' 是 Function 类型返回 true，否则返回 false
+ */
+var isFunction = function isFunction(val) {
+  return typeof val === 'function' || Object.prototype.toString.apply(val) === '[object Function]';
+};
 var hasDirectSubscribersFor = function hasDirectSubscribersFor(topic) {
   return hasOwn(_subscribers, topic) && _subscribers[topic].length > 0;
 };
@@ -47,7 +58,19 @@ var _publish = function publish(topic, data) {
   }
   deliver(topic);
 };
+
+/**
+ * 订阅主题，并给出处理器函数
+ * ========================================================================
+ * @method subscribe
+ * @param {String} topic - 主题名称
+ * @param {Function} handler - 主题的处理器函数
+ */
 var _subscribe = function subscribe(topic, handler) {
+  if (!isFunction(handler)) {
+    return false;
+  }
+
   /* istanbul ignore else */
   if (!_subscribers[topic]) {
     _subscribers[topic] = [];
@@ -61,7 +84,7 @@ var _unsubscribe = function unsubscribe(topic, handler) {
     return false;
   }
   subscription = _subscribers[topic];
-  if (handler) {
+  if (isFunction(handler)) {
     subscription.forEach(function (fn, i) {
       if (fn === handler) {
         index = i;
