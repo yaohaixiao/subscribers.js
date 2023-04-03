@@ -1,6 +1,6 @@
 # subscribers.js
 
-[![Github file size](https://img.shields.io/github/size/yaohaixiao/subscribers.js/subscribers.min.js.svg)](https://github.com/yaohaixiao/subscribers.js/blob/master/subscribers.min.js)
+[![Github file size](https://img.shields.io/github/size/yaohaixiao/subscribers.js/dist/subscribers.min.js.svg)](https://github.com/yaohaixiao/subscribers.js/blob/master/dist/subscribers.min.js)
 [![prettier code style](https://img.shields.io/badge/code_style-prettier-07b759.svg)](https://prettier.io)
 
 
