@@ -74,36 +74,46 @@ const hasSubscribers = (topic) => {
 /**
  * 发布订阅主题信息
  * ========================================================================
+ * 主题默认是异步发布的。确保在消费者处理主题时，主题的发起者不会被阻止。
+ * ========================================================================
  * @method publish
  * @param {String} topic - （必须）主题名称
  * @param {Object} data - （必须）数据对象
- * @returns {Boolean}
+ * @param {Boolean} async - (可选) 是否异步发布
  */
-const publish = (topic, data) => {
-  const deliver = (topic) => {
+const publish = (topic, data, async = true) => {
+  const execute = (topic) => {
     if (!hasDirectSubscribersFor(topic)) {
       return false
     }
 
-    _subscribers[topic].forEach((observer) => {
-      observer.callback(data)
+    _subscribers[topic].forEach((subscriber) => {
+      subscriber.callback(data)
     })
   }
-  let subscriber = topic
-  let position = topic.lastIndexOf('.')
+  const deliver = () => {
+    let subscriber = topic
+    let position = topic.lastIndexOf('.')
+
+    while (position !== -1) {
+      subscriber = subscriber.substring(0, position)
+      position = subscriber.lastIndexOf('.')
+
+      execute(subscriber)
+    }
+
+    execute(topic)
+  }
 
   if (!hasSubscribers(topic)) {
     return false
   }
 
-  while (position !== -1) {
-    subscriber = subscriber.substring(0, position)
-    position = subscriber.lastIndexOf('.')
-
-    deliver(subscriber)
+  if (async) {
+    setTimeout(deliver, 4)
+  } else {
+    deliver()
   }
-
-  deliver(topic)
 }
 
 /**
@@ -203,7 +213,7 @@ const getSubscribers = (topic) => {
   Object.keys(_subscribers).forEach((subscriber) => {
     const observer = {}
 
-    if(!topic) {
+    if (!topic) {
       observer[subscriber] = _subscribers[subscriber]
       subscribers.push(observer)
     } else {
@@ -261,12 +271,14 @@ const Subscribers = {
    * 发布订阅主题信息
    * ========================================================================
    * @method publish
+   * @see publish
    * @param {String} topic - （必须）主题名称
    * @param {Object} data - （必须）数据对象
+   * @param {Boolean} async - (可选) 是否异步发布
    * @returns {Boolean}
    */
-  publish(topic, data) {
-    publish(topic, data)
+  publish(topic, data, async = true) {
+    publish(topic, data, async)
 
     return this
   },
@@ -274,35 +286,34 @@ const Subscribers = {
    * 订阅主题，并给出处理器函数
    * ========================================================================
    * @method subscribe
+   * @see subscribe
    * @param {String} topic - （必须）主题名称
    * @param {Function} handler - （必须）主题的处理器函数
    */
   subscribe(topic, handler) {
-    subscribe(topic, handler)
-
-    return this
+    return subscribe(topic, handler)
   },
   /**
    * 订阅主题，并给出处理器函数，接受到消息后，仅执行一次
    * ========================================================================
    * @method subscribeOnce
+   * @see subscribeOnce
    * @param {String} topic - （必须）主题名称
    * @param {Function} handler - （必须）主题的处理器函数
    */
   subscribeOnce(topic, handler) {
-    subscribeOnce(topic, handler)
-
-    return this
+    return subscribeOnce(topic, handler)
   },
   /**
    * 取消订阅主题
    * ========================================================================
    * @method unsubscribe
+   * @see unsubscribe
    * @param {String} topic - （必须）订阅的主题
-   * @param {Function} [handler] - （可选）订阅主题的处理器函数
+   * @param {Function|String} [token] - （可选）订阅主题的处理器函数或者唯一 Id 值
    */
-  unsubscribe(topic, handler) {
-    unsubscribe(topic, handler)
+  unsubscribe(topic, token) {
+    unsubscribe(topic, token)
 
     return this
   },
@@ -310,6 +321,7 @@ const Subscribers = {
    * 获取全部或者包含 topic 主题的订阅者信息
    * ========================================================================
    * @method getSubscribers
+   * @see getSubscribers
    * @param {String} [topic] - （可选）主题名称
    *                            传递 topic 参数，返回包含 topic 主题的订阅者信息
    *                            不传递 topic 参数，返回全部订阅者信息
@@ -322,6 +334,7 @@ const Subscribers = {
    * 删除特定 topic 主题的订阅者信息
    * ========================================================================
    * @method deleteSubscriber
+   * @see deleteSubscriber
    * @param {String} topic - （必须）主题名称
    * @returns {Boolean}
    */
@@ -334,6 +347,7 @@ const Subscribers = {
    * 删除包含 topic 主题的订阅者信息
    * ========================================================================
    * @method deleteSubscribers
+   * @see deleteSubscribers
    * @param {String} topic - （必须）主题名称
    * @returns {Boolean}
    */
@@ -346,6 +360,7 @@ const Subscribers = {
    * 清理所有订阅者（主题和处理器的）信息
    * ========================================================================
    * @method clear
+   * @see clear
    */
   clear() {
     clear()

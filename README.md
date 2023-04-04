@@ -13,6 +13,7 @@
 
 - 原生 JavaScript 编写，无任何依赖；
 - 基于 topic 主题的消息，且支持命名空间的订阅/发布；
+- 支持异/同步 publish 消息；
 - 支持 UMD 规范，同时也提供 ES6 模块调用；
 - API 接口调用简单便捷；
 
@@ -60,7 +61,7 @@ const Subscribers = require('@yaohaixiao/subscribers.js')
 
 ```js
 // 调用 Subscribers 对象
-import Subscribers from '@yaohaixiao/esm/subscribers'
+import Subscribers from '@yaohaixiao/subscribers.js/esm/subscribers'
 ```
 
 ## Usage
@@ -80,7 +81,7 @@ Subscribers.subscribe('log', handler)
 Subscribers.subscribe('log.info', handler)
 Subscribers.subscribe('log.info.update', handler)
 
-* 发布主题 */
+/* 发布主题 */
 // 发布一个（名为：log）消息，log 会触发
 Subscribers.publish('log', 'hello world!')
 // log/log.info/log.info.update 主题的处理器函数都将执行
@@ -99,6 +100,228 @@ Subscribers.unsubscribe('alert', token)
 Subscribers.unsubscribe('log')
 ```
 
+## API 文档
+
+subscribers.js 中封装了一系列常用方法，并且适用起来非常方便。
+
+### methods
+
+#### subscribe(topic, handler)
+
+订阅主题，并给出处理器函数。
+
+#### Parameters
+
+##### topic
+
+Type: `String`
+
+Default: ``
+
+（必须）主题名称。
+
+##### handler
+
+Type: `Function`
+
+Default: ``
+
+（必须）主题的处理器函数。
+
+```js
+Subscribers.subscribe('author', handlerAuthor)
+
+// 支持命名空间形式的主题的订阅
+Subscribers.subscribe('author.career', handlerCareer)
+Subscribers.subscribe('author.career.years', handlerYears)
+```
+
+#### subscribeOnce(topic, handler)
+
+订阅主题，并给出处理器函数，仅执行一次。
+
+#### Parameters
+
+##### topic
+
+Type: `String`
+
+Default: ``
+
+（必须）主题名称。
+
+##### handler
+
+Type: `Function`
+
+Default: ``
+
+（必须）主题的处理器函数。
+
+```js
+Subscribers.subscribeOnce('author', handlerAuthor)
+
+Subscribers.publish('author', 'ok')
+
+// handlerAuthor() 函数将不再执行
+Subscribers.publish('author', 'again')
+```
+
+#### publish(topic, data[, async = true])
+
+发布订阅主题信息。
+
+#### Parameters
+
+##### topic
+
+Type: `String`
+
+Default: ``
+
+（必须）主题名称。
+
+##### data
+
+Type: `Object`
+
+Default: ``
+
+必须）消息传递的数据对象。
+
+##### async
+
+Type: `Boolean`
+
+Default: `true`
+
+(可选) 是否异步发布。默认值：true。
+
+```js
+Subscribers.subscribe('author', handlerAuthor)
+Subscribers.subscribe('author.career', handlerCareer)
+Subscribers.subscribe('author.career.years', handlerYears)
+
+// 异步发布
+Subscribers.publish('author', 'ok')
+// 同步发布
+Subscribers.publish('author', 'ok', false)
+```
+
+#### unsubscribe(topic[, token])
+
+取消订阅主题。
+
+#### Parameters
+
+##### topic
+
+Type: `String`
+
+Default: ``
+
+（必须）主题名称。
+
+##### token
+
+Type: `Function|String`
+
+Default: ``
+
+（可选）订阅主题的处理器函数或者唯一 Id 值。
+
+```js
+Subscribers.subscribe('author', handlerAuthor)
+const token = Subscribers.subscribe('author.career', handlerCareer)
+
+// 取消订阅 author 主题
+Subscribers.unsubscribe('author',handlerAuthor)
+// 取消订阅 author.career 主题
+Subscribers.publish('author.career', token)
+```
+
+#### getSubscriptions([topic])
+
+获取全部或者包含 topic 主题的订阅者信息。
+
+#### Parameters
+
+##### topic
+
+Type: `String`
+
+Default: ``
+
+（可选）主题名称。传递 topic 参数，返回包含 topic 主题的订阅者信息，不传递 topic 参数，返回全部订阅者信息。
+
+```js
+Subscribers.subscribe('author', handlerAuthor)
+Subscribers.subscribe('author.career', handlerCareer)
+Subscribers.subscribe('author.career.years', handlerYears)
+
+// 获取 author 主题订阅者信息
+Subscribers.getSubscriptions('author')
+
+// 获取所有订阅者信息
+Subscribers.getSubscriptions()
+```
+
+#### deleteSubscriber(topic)
+
+删除特定 topic 主题的订阅者信息。
+
+#### Parameters
+
+##### topic
+
+Type: `String`
+
+Default: ``
+
+（必须）主题名称。
+
+```js
+Subscribers.subscribe('author', handlerAuthor)
+
+// 删除 author 主题相关的所有信息
+Subscribers.deleteSubscriber('autor')
+```
+
+#### deleteSubscribers(topic)
+
+删除包含 topic 主题的订阅者信息。
+
+#### Parameters
+
+##### topic
+
+Type: `String`
+
+Default: ``
+
+（必须）主题名称。
+
+```js
+Subscribers.subscribe('author', handlerAuthor)
+Subscribers.subscribe('author.career', handlerCareer)
+Subscribers.subscribe('author.career.years', handlerYears)
+
+// 删除包含 author 或者 author.career 主题相关的所有信息
+Subscribers.deleteSubscribers('author.career')
+```
+
+#### clear()
+
+清理所有订阅者（主题和处理器的）信息
+
+```js
+Subscribers.subscribe('author', handlerAuthor)
+Subscribers.subscribe('author.career', handlerCareer)
+Subscribers.subscribe('author.career.years', handlerYears)
+
+// 清理所有订阅者（主题和处理器的）信息
+Subscribers.clear()
+```
 
 ## License
 

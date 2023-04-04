@@ -41,7 +41,7 @@ describe('unsubscribe() 方法', () => {
 
       expect(subscriptions.length).toEqual(2)
 
-      let result = publish('author', PAYLOAD)
+      let result = publish('author', PAYLOAD, false)
 
       expect(result).toBe(false)
       expect(author).toEqual('')
@@ -60,7 +60,7 @@ describe('unsubscribe() 方法', () => {
 
       expect(subscriptions.length).toEqual(2)
 
-      let result = publish('author', PAYLOAD)
+      let result = publish('author', PAYLOAD, false)
 
       expect(result).toBe(false)
       expect(author).toEqual('')
@@ -74,7 +74,7 @@ describe('unsubscribe() 方法', () => {
 
       expect(subscriptions.length).toEqual(1)
 
-      publish('author.career.years', PAYLOAD)
+      publish('author.career.years', PAYLOAD, false)
 
       expect(years).toEqual(20)
       expect(yearsCount).toEqual(1)
@@ -99,14 +99,14 @@ describe('unsubscribe() 方法', () => {
     it(`unsubscribe('author.career')：author.career 有效`, () => {
       unsubscribe('author.career')
 
-      const result = publish('author.career', PAYLOAD)
+      const result = publish('author.career', PAYLOAD, false)
       const subscribers = getSubscribers()
 
       expect(result).toBe(false)
       expect(deleteSubscriber('author.career')).toBe(false)
       expect(subscribers.length).toEqual(1)
 
-      publish('author.career.years', PAYLOAD)
+      publish('author.career.years', PAYLOAD, false)
 
       expect(years).toEqual(20)
       expect(yearsCount).toEqual(2)

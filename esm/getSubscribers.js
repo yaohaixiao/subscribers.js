@@ -16,7 +16,7 @@ const getSubscribers = (topic) => {
   Object.keys(_subscribers).forEach((subscriber) => {
     const observer = {}
 
-    if(!topic) {
+    if (!topic) {
       observer[subscriber] = _subscribers[subscriber]
       subscribers.push(observer)
     } else {

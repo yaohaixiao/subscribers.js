@@ -8,7 +8,7 @@ import deleteSubscriber from './deleteSubscriber'
  * ========================================================================
  * @method unsubscribe
  * @param {String} topic - （必须）订阅的主题
- * @param {Function|String} [token] - （可选）订阅主题的处理器函数
+ * @param {Function|String} [token] - （可选）订阅主题的处理器函数或者唯一 Id 值
  */
 const unsubscribe = (topic, token) => {
   let index = -1

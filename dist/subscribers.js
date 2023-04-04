@@ -10,6 +10,31 @@
 "use strict";
 
 var _subscribers = {};
+
+/**
+ * 生成唯一 id 字符串的函数
+ * ========================================================================
+ * @method guid
+ * @param {String} [prefix] - 生成 id 的前缀字符串
+ * @return {String} 返回一个
+ */
+var guid = function () {
+  var id = 0;
+  return function () {
+    var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'guid-';
+    id += 1;
+    return "".concat(prefix + id);
+  };
+}();
+
+/**
+ * 检测对象自身属性中是否具有指定的属性。
+ * ========================================================================
+ * @method hasOwn
+ * @param {Object} obj - （必须）检测的目标对象
+ * @param {String} prop - （必须）属性名
+ * @returns {Boolean}
+ */
 var hasOwn = function hasOwn(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 };
@@ -22,11 +47,27 @@ var hasOwn = function hasOwn(obj, prop) {
  * @returns {Boolean} 'val' 是 Function 类型返回 true，否则返回 false
  */
 var isFunction = function isFunction(val) {
-  return typeof val === 'function' || Object.prototype.toString.apply(val) === '[object Function]';
+  return Object.prototype.toString.apply(val) === '[object Function]';
 };
+
+/**
+ * 判断是否存在特定 topic 指定的订阅者信息
+ * ========================================================================
+ * @method hasDirectSubscribersFor
+ * @param {String} topic - （必须）主题名称
+ * @returns {Boolean}
+ */
 var hasDirectSubscribersFor = function hasDirectSubscribersFor(topic) {
   return hasOwn(_subscribers, topic) && _subscribers[topic].length > 0;
 };
+
+/**
+ * 判断是否存在包含 topic 指定的订阅者信息
+ * ========================================================================
+ * @method hasSubscribers
+ * @param {String} topic - （必须）主题名称
+ * @returns {Boolean}
+ */
 var hasSubscribers = function hasSubscribers(topic) {
   var found = hasDirectSubscribersFor(topic);
   var position = topic.lastIndexOf('.');
@@ -37,36 +78,56 @@ var hasSubscribers = function hasSubscribers(topic) {
   }
   return found;
 };
+
+/**
+ * 发布订阅主题信息
+ * ========================================================================
+ * 主题默认是异步发布的。确保在消费者处理主题时，主题的发起者不会被阻止。
+ * ========================================================================
+ * @method publish
+ * @param {String} topic - （必须）主题名称
+ * @param {Object} data - （必须）数据对象
+ * @param {Boolean} async - (可选) 是否异步发布
+ */
 var _publish = function publish(topic, data) {
-  var deliver = function deliver(topic) {
+  var async = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+  var execute = function execute(topic) {
     if (!hasDirectSubscribersFor(topic)) {
       return false;
     }
-    _subscribers[topic].forEach(function (handler) {
-      handler(data);
+    _subscribers[topic].forEach(function (subscriber) {
+      subscriber.callback(data);
     });
   };
-  var subscriber = topic;
-  var position = topic.lastIndexOf('.');
+  var deliver = function deliver() {
+    var subscriber = topic;
+    var position = topic.lastIndexOf('.');
+    while (position !== -1) {
+      subscriber = subscriber.substring(0, position);
+      position = subscriber.lastIndexOf('.');
+      execute(subscriber);
+    }
+    execute(topic);
+  };
   if (!hasSubscribers(topic)) {
     return false;
   }
-  while (position !== -1) {
-    subscriber = subscriber.substring(0, position);
-    position = subscriber.lastIndexOf('.');
-    deliver(subscriber);
+  if (async) {
+    setTimeout(deliver, 4);
+  } else {
+    deliver();
   }
-  deliver(topic);
 };
 
 /**
  * 订阅主题，并给出处理器函数
  * ========================================================================
  * @method subscribe
- * @param {String} topic - 主题名称
- * @param {Function} handler - 主题的处理器函数
+ * @param {String} topic - （必须）主题名称
+ * @param {Function} handler - （必须）主题的处理器函数
  */
 var _subscribe = function subscribe(topic, handler) {
+  var token = guid();
   if (!isFunction(handler)) {
     return false;
   }
@@ -75,57 +136,112 @@ var _subscribe = function subscribe(topic, handler) {
   if (!_subscribers[topic]) {
     _subscribers[topic] = [];
   }
-  _subscribers[topic].push(handler);
+  _subscribers[topic].push({
+    callback: handler,
+    token: token
+  });
+  return token;
 };
-var _unsubscribe = function unsubscribe(topic, handler) {
+
+/**
+ * 取消订阅主题
+ * ========================================================================
+ * @method unsubscribe
+ * @param {String} topic - （必须）订阅的主题
+ * @param {Function|String} [token] - （可选）订阅主题的处理器函数
+ */
+var _unsubscribe = function unsubscribe(topic, token) {
   var index = -1;
-  var subscription = [];
+  var subscriber = [];
   if (!hasSubscribers(topic)) {
     return false;
   }
-  subscription = _subscribers[topic];
-  if (isFunction(handler)) {
-    subscription.forEach(function (fn, i) {
-      if (fn === handler) {
+  subscriber = _subscribers[topic];
+  if (token) {
+    subscriber.forEach(function (observer, i) {
+      if (observer.callback === token && isFunction(token)) {
         index = i;
+      } else {
+        if (observer.token === token && typeof token === 'string') {
+          index = i;
+        }
       }
     });
     if (index > -1) {
-      subscription.splice(index, 1);
+      subscriber.splice(index, 1);
 
       /* istanbul ignore else */
-      if (subscription.length < 1) {
-        deleteSubscriber(topic);
+      if (subscriber.length < 1) {
+        _deleteSubscriber(topic);
       }
     }
   } else {
-    deleteSubscriber(topic);
+    _deleteSubscriber(topic);
   }
 };
+
+/**
+ * 订阅主题，并给出处理器函数，接受到消息后，仅执行一次
+ * ========================================================================
+ * @method subscribeOnce
+ * @param {String} topic - （必须）主题名称
+ * @param {Function} handler - （必须）主题的处理器函数
+ */
 var _subscribeOnce = function subscribeOnce(topic, handler) {
-  _subscribe(topic, function () {
+  return _subscribe(topic, function () {
     _unsubscribe(topic, handler);
     handler.apply(this, arguments);
   });
 };
+
+/**
+ * 获取全部或者包含 topic 主题的订阅者信息
+ * ========================================================================
+ * @method getSubscribers
+ * @param {String} [topic] - （可选）主题名称
+ *                            传递 topic 参数，返回包含 topic 主题的订阅者信息
+ *                            不传递 topic 参数，返回全部订阅者信息
+ * @returns {*[]}
+ */
 var getSubscribers = function getSubscribers(topic) {
-  var subscriptions = [];
-  Object.keys(_subscribers).forEach(function (subscription) {
-    if (hasOwn(_subscribers, subscription) && subscription.indexOf(topic) === 0) {
-      var option = {};
-      option[subscription] = _subscribers[subscription];
-      subscriptions.push(option);
+  var subscribers = [];
+  Object.keys(_subscribers).forEach(function (subscriber) {
+    var observer = {};
+    if (!topic) {
+      observer[subscriber] = _subscribers[subscriber];
+      subscribers.push(observer);
+    } else {
+      if (hasOwn(_subscribers, subscriber) && subscriber.indexOf(topic) === 0) {
+        observer[subscriber] = _subscribers[subscriber];
+        subscribers.push(observer);
+      }
     }
   });
-  return subscriptions;
+  return subscribers;
 };
-var deleteSubscriber = function deleteSubscriber(topic) {
+
+/**
+ * 删除特定 topic 主题的订阅者信息
+ * ========================================================================
+ * @method deleteSubscriber
+ * @param {String} topic - （必须）主题名称
+ * @returns {Boolean}
+ */
+var _deleteSubscriber = function deleteSubscriber(topic) {
   if (!hasOwn(_subscribers, topic)) {
     return false;
   }
   delete _subscribers[topic];
 };
-var deleteSubscribers = function deleteSubscribers(topic) {
+
+/**
+ * 删除包含 topic 主题的订阅者信息
+ * ========================================================================
+ * @method deleteSubscribers
+ * @param {String} topic - （必须）主题名称
+ * @returns {Boolean}
+ */
+var _deleteSubscribers = function deleteSubscribers(topic) {
   if (!hasSubscribers(topic)) {
     return false;
   }
@@ -141,33 +257,98 @@ var _clear = function clear() {
 
 // eslint-disable-next-line no-unused-vars
 var Subscribers = {
+  /**
+   * 发布订阅主题信息
+   * ========================================================================
+   * @method publish
+   * @see publish
+   * @param {String} topic - （必须）主题名称
+   * @param {Object} data - （必须）数据对象
+   * @param {Boolean} async - (可选) 是否异步发布
+   * @returns {Boolean}
+   */
   publish: function publish(topic, data) {
-    _publish(topic, data);
+    var async = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+    _publish(topic, data, async);
     return this;
   },
+  /**
+   * 订阅主题，并给出处理器函数
+   * ========================================================================
+   * @method subscribe
+   * @see subscribe
+   * @param {String} topic - （必须）主题名称
+   * @param {Function} handler - （必须）主题的处理器函数
+   */
   subscribe: function subscribe(topic, handler) {
-    _subscribe(topic, handler);
-    return this;
+    return _subscribe(topic, handler);
   },
+  /**
+   * 订阅主题，并给出处理器函数，接受到消息后，仅执行一次
+   * ========================================================================
+   * @method subscribeOnce
+   * @see subscribeOnce
+   * @param {String} topic - （必须）主题名称
+   * @param {Function} handler - （必须）主题的处理器函数
+   */
   subscribeOnce: function subscribeOnce(topic, handler) {
-    _subscribeOnce(topic, handler);
+    return _subscribeOnce(topic, handler);
+  },
+  /**
+   * 取消订阅主题
+   * ========================================================================
+   * @method unsubscribe
+   * @see unsubscribe
+   * @param {String} topic - （必须）订阅的主题
+   * @param {Function|String} [token] - （可选）订阅主题的处理器函数或者唯一 Id 值
+   */
+  unsubscribe: function unsubscribe(topic, token) {
+    _unsubscribe(topic, token);
     return this;
   },
-  unsubscribe: function unsubscribe(topic, handler) {
-    _unsubscribe(topic, handler);
-    return this;
-  },
+  /**
+   * 获取全部或者包含 topic 主题的订阅者信息
+   * ========================================================================
+   * @method getSubscribers
+   * @see getSubscribers
+   * @param {String} [topic] - （可选）主题名称
+   *                            传递 topic 参数，返回包含 topic 主题的订阅者信息
+   *                            不传递 topic 参数，返回全部订阅者信息
+   * @returns {*[]}
+   */
   getSubscriptions: function getSubscriptions(topic) {
     return getSubscribers(topic);
   },
-  deleteSubscription: function deleteSubscription(topic) {
-    deleteSubscriber(topic);
+  /**
+   * 删除特定 topic 主题的订阅者信息
+   * ========================================================================
+   * @method deleteSubscriber
+   * @see deleteSubscriber
+   * @param {String} topic - （必须）主题名称
+   * @returns {Boolean}
+   */
+  deleteSubscriber: function deleteSubscriber(topic) {
+    _deleteSubscriber(topic);
     return this;
   },
-  deleteSubscriptions: function deleteSubscriptions(topic) {
-    deleteSubscribers(topic);
+  /**
+   * 删除包含 topic 主题的订阅者信息
+   * ========================================================================
+   * @method deleteSubscribers
+   * @see deleteSubscribers
+   * @param {String} topic - （必须）主题名称
+   * @returns {Boolean}
+   */
+  deleteSubscribers: function deleteSubscribers(topic) {
+    _deleteSubscribers(topic);
     return this;
   },
+  /**
+   * 清理所有订阅者（主题和处理器的）信息
+   * ========================================================================
+   * @method clear
+   * @see clear
+   */
   clear: function clear() {
     _clear();
     return this;

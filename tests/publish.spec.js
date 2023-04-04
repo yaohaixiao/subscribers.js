@@ -27,20 +27,28 @@ describe('publish() 方法', () => {
   subscribe('author.career.years', handlerYears)
 
   it("publish('javascript'), javascript 主题无订阅者：", () => {
+    jest.useFakeTimers()
+
     const result = publish('javascript', PAYLOAD)
+
+    jest.advanceTimersByTime(5)
 
     expect(result).toBe(false)
   })
 
   it("publish('author'), author 主题有订阅者：", () => {
-    publish('author', PAYLOAD)
+    publish('author', PAYLOAD, false)
 
     expect(authorCount).toEqual(1)
     expect(author).toEqual('Robert Yao')
   })
 
   it("publish('author.career'), author 和 author.career 主题有订阅者：", () => {
+    jest.useFakeTimers()
+
     publish('author.career', PAYLOAD)
+
+    jest.advanceTimersByTime(5)
 
     expect(authorCount).toEqual(2)
     expect(author).toEqual('Robert Yao')
@@ -48,6 +56,8 @@ describe('publish() 方法', () => {
     expect(careerCount).toEqual(1)
 
     publish('author.career.years', PAYLOAD)
+
+    jest.advanceTimersByTime(5)
 
     expect(yearsCount).toEqual(1)
     expect(years).toEqual(20)
@@ -58,7 +68,11 @@ describe('publish() 方法', () => {
   })
 
   it("publish('author.age'), author 主题有订阅者，age 主题无订阅者：", () => {
+    jest.useFakeTimers()
+
     publish('author.age', PAYLOAD)
+
+    jest.advanceTimersByTime(5)
 
     expect(authorCount).toEqual(4)
     expect(author).toEqual('Robert Yao')
