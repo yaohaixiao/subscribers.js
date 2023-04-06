@@ -80,7 +80,7 @@ var hasSubscribers = function hasSubscribers(topic) {
 };
 
 /**
- * 发布订阅主题信息
+ * （异步）发布订阅主题信息
  * ========================================================================
  * 主题默认是异步发布的。确保在消费者处理主题时，主题的发起者不会被阻止。
  * ========================================================================
@@ -120,11 +120,24 @@ var _publish = function publish(topic, data) {
 };
 
 /**
+ * 同步发布订阅主题信息
+ * ========================================================================
+ * @method notify
+ * @alias publish
+ * @param {String} topic - （必须）主题名称
+ * @param {Object} data - （必须）数据对象
+ */
+var _notify = function notify(topic, data) {
+  _publish(topic, data, false);
+};
+
+/**
  * 订阅主题，并给出处理器函数
  * ========================================================================
  * @method subscribe
  * @param {String} topic - （必须）主题名称
  * @param {Function} handler - （必须）主题的处理器函数
+ * @return {String|Boolean}
  */
 var _subscribe = function subscribe(topic, handler) {
   var token = guid();
@@ -159,12 +172,8 @@ var _unsubscribe = function unsubscribe(topic, token) {
   subscriber = _subscribers[topic];
   if (token) {
     subscriber.forEach(function (observer, i) {
-      if (observer.callback === token && isFunction(token)) {
+      if (observer.callback === token || observer.token === token) {
         index = i;
-      } else {
-        if (observer.token === token && typeof token === 'string') {
-          index = i;
-        }
       }
     });
     if (index > -1) {
@@ -186,6 +195,7 @@ var _unsubscribe = function unsubscribe(topic, token) {
  * @method subscribeOnce
  * @param {String} topic - （必须）主题名称
  * @param {Function} handler - （必须）主题的处理器函数
+ * @return {String|Boolean}
  */
 var _subscribeOnce = function subscribeOnce(topic, handler) {
   return _subscribe(topic, function () {
@@ -258,18 +268,31 @@ var _clear = function clear() {
 // eslint-disable-next-line no-unused-vars
 var Subscribers = {
   /**
-   * 发布订阅主题信息
+   * （异步）发布订阅主题信息
    * ========================================================================
    * @method publish
    * @see publish
    * @param {String} topic - （必须）主题名称
    * @param {Object} data - （必须）数据对象
    * @param {Boolean} async - (可选) 是否异步发布
-   * @returns {Boolean}
+   * @returns {Subscribers}
    */
   publish: function publish(topic, data) {
     var async = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
     _publish(topic, data, async);
+    return this;
+  },
+  /**
+   * 同步发布订阅主题信息
+   * ========================================================================
+   * @method notify
+   * @alias publish
+   * @param {String} topic - （必须）主题名称
+   * @param {Object} data - （必须）数据对象
+   * @returns {Subscribers}
+   */
+  notify: function notify(topic, data) {
+    _notify(topic, data);
     return this;
   },
   /**
@@ -279,6 +302,7 @@ var Subscribers = {
    * @see subscribe
    * @param {String} topic - （必须）主题名称
    * @param {Function} handler - （必须）主题的处理器函数
+   * @return {String|Boolean}
    */
   subscribe: function subscribe(topic, handler) {
     return _subscribe(topic, handler);
@@ -290,6 +314,7 @@ var Subscribers = {
    * @see subscribeOnce
    * @param {String} topic - （必须）主题名称
    * @param {Function} handler - （必须）主题的处理器函数
+   * @return {String|Boolean}
    */
   subscribeOnce: function subscribeOnce(topic, handler) {
     return _subscribeOnce(topic, handler);
@@ -301,6 +326,7 @@ var Subscribers = {
    * @see unsubscribe
    * @param {String} topic - （必须）订阅的主题
    * @param {Function|String} [token] - （可选）订阅主题的处理器函数或者唯一 Id 值
+   * @returns {Subscribers}
    */
   unsubscribe: function unsubscribe(topic, token) {
     _unsubscribe(topic, token);
@@ -325,7 +351,7 @@ var Subscribers = {
    * @method deleteSubscriber
    * @see deleteSubscriber
    * @param {String} topic - （必须）主题名称
-   * @returns {Boolean}
+   * @returns {Subscribers}
    */
   deleteSubscriber: function deleteSubscriber(topic) {
     _deleteSubscriber(topic);
@@ -337,7 +363,7 @@ var Subscribers = {
    * @method deleteSubscribers
    * @see deleteSubscribers
    * @param {String} topic - （必须）主题名称
-   * @returns {Boolean}
+   * @returns {Subscribers}
    */
   deleteSubscribers: function deleteSubscribers(topic) {
     _deleteSubscribers(topic);
@@ -348,6 +374,7 @@ var Subscribers = {
    * ========================================================================
    * @method clear
    * @see clear
+   * @returns {Subscribers}
    */
   clear: function clear() {
     _clear();
