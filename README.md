@@ -170,7 +170,7 @@ Subscribers.publish('author', 'again')
 
 #### publish(topic, data[, async = true])
 
-发布订阅主题信息。
+发布订阅主题信息。subscribers.js 主题默认是异步发布的。确保在消费者处理主题时，主题的发起者不会被阻止。 当然 publish() 方法也支持同步主题发布。
 
 #### Parameters
 
