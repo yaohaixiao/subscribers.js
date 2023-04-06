@@ -1,4 +1,5 @@
 import publish from './publish'
+import notify from './notify'
 import subscribe from './subscribe'
 import unsubscribe from './unsubscribe'
 import subscribeOnce from './subscribeOnce'
@@ -16,10 +17,25 @@ const Subscribers = {
    * @param {String} topic - （必须）主题名称
    * @param {Object} data - （必须）数据对象
    * @param {Boolean} async - (可选) 是否异步发布
-   * @returns {Boolean}
+   * @returns {Subscribers}
    */
   publish(topic, data, async = true) {
     publish(topic, data, async)
+
+    return this
+  },
+  /**
+   * 同步发布订阅主题信息
+   * ========================================================================
+   * @method notify
+   * @alias publish
+   * @see publish
+   * @param {String} topic - （必须）主题名称
+   * @param {Object} data - （必须）数据对象
+   * @returns {Subscribers}
+   */
+  notify(topic, data) {
+    notify(topic, data)
 
     return this
   },
@@ -30,6 +46,7 @@ const Subscribers = {
    * @see subscribe
    * @param {String} topic - （必须）主题名称
    * @param {Function} handler - （必须）主题的处理器函数
+   * @return {String|Boolean}
    */
   subscribe(topic, handler) {
     return subscribe(topic, handler)
@@ -39,11 +56,12 @@ const Subscribers = {
    * ========================================================================
    * @method subscribeOnce
    * @see subscribeOnce
-   * @param {String} topic - （必须）订阅的主题
-   * @param {Function|String} [token] - （可选）订阅主题的处理器函数
+   * @param {String} topic - （必须）主题名称
+   * @param {Function} handler - （必须）主题的处理器函数
+   * @return {String|Boolean}
    */
-  subscribeOnce(topic, token) {
-    return subscribeOnce(topic, token)
+  subscribeOnce(topic, handler) {
+    return subscribeOnce(topic, handler)
   },
   /**
    * 取消订阅主题
@@ -51,7 +69,8 @@ const Subscribers = {
    * @method unsubscribe
    * @see unsubscribe
    * @param {String} topic - （必须）订阅的主题
-   * @param {Function} [token] - （可选）订阅主题的处理器函数或者唯一 Id 值
+   * @param {Function|String} [token] - （可选）订阅主题的处理器函数或者唯一 Id 值
+   * @returns {Subscribers}
    */
   unsubscribe(topic, token) {
     unsubscribe(topic, token)
@@ -77,7 +96,7 @@ const Subscribers = {
    * @method deleteSubscriber
    * @see deleteSubscriber
    * @param {String} topic - （必须）主题名称
-   * @returns {Boolean}
+   * @returns {Subscribers}
    */
   deleteSubscriber(topic) {
     deleteSubscriber(topic)
@@ -90,7 +109,7 @@ const Subscribers = {
    * @method deleteSubscribers
    * @see deleteSubscribers
    * @param {String} topic - （必须）主题名称
-   * @returns {Boolean}
+   * @returns {Subscribers}
    */
   deleteSubscribers(topic) {
     deleteSubscribers(topic)
@@ -102,6 +121,7 @@ const Subscribers = {
    * ========================================================================
    * @method clear
    * @see clear
+   * @returns {Subscribers}
    */
   clear() {
     clear()

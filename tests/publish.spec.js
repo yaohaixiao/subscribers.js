@@ -1,4 +1,5 @@
 import publish from 'esm/publish'
+import notify from 'esm/notify'
 import subscribe from 'esm/subscribe'
 
 describe('publish() 方法', () => {
@@ -37,7 +38,7 @@ describe('publish() 方法', () => {
   })
 
   it("publish('author'), author 主题有订阅者：", () => {
-    publish('author', PAYLOAD, false)
+    notify('author', PAYLOAD)
 
     expect(authorCount).toEqual(1)
     expect(author).toEqual('Robert Yao')

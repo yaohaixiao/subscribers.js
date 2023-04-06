@@ -1,5 +1,4 @@
 import _subscribers from './_subscribers'
-import isFunction from './isFunction'
 import hasSubscribers from './hasSubscribers'
 import deleteSubscriber from './deleteSubscriber'
 
@@ -22,12 +21,8 @@ const unsubscribe = (topic, token) => {
 
   if (token) {
     subscriber.forEach((observer, i) => {
-      if (observer.callback === token && isFunction(token)) {
+      if (observer.callback === token || observer.token === token) {
         index = i
-      } else {
-        if (observer.token === token && typeof token === 'string') {
-          index = i
-        }
       }
     })
 

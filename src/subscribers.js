@@ -72,7 +72,7 @@ const hasSubscribers = (topic) => {
 }
 
 /**
- * 发布订阅主题信息
+ * （异步）发布订阅主题信息
  * ========================================================================
  * 主题默认是异步发布的。确保在消费者处理主题时，主题的发起者不会被阻止。
  * ========================================================================
@@ -117,11 +117,24 @@ const publish = (topic, data, async = true) => {
 }
 
 /**
+ * 同步发布订阅主题信息
+ * ========================================================================
+ * @method notify
+ * @alias publish
+ * @param {String} topic - （必须）主题名称
+ * @param {Object} data - （必须）数据对象
+ */
+const notify = (topic, data) => {
+  publish(topic, data, false)
+}
+
+/**
  * 订阅主题，并给出处理器函数
  * ========================================================================
  * @method subscribe
  * @param {String} topic - （必须）主题名称
  * @param {Function} handler - （必须）主题的处理器函数
+ * @return {String|Boolean}
  */
 const subscribe = (topic, handler) => {
   const token = guid()
@@ -162,12 +175,8 @@ const unsubscribe = (topic, token) => {
 
   if (token) {
     subscriber.forEach((observer, i) => {
-      if (observer.callback === token && isFunction(token)) {
+      if (observer.callback === token || observer.token === token) {
         index = i
-      } else {
-        if (observer.token === token && typeof token === 'string') {
-          index = i
-        }
       }
     })
 
@@ -190,6 +199,7 @@ const unsubscribe = (topic, token) => {
  * @method subscribeOnce
  * @param {String} topic - （必须）主题名称
  * @param {Function} handler - （必须）主题的处理器函数
+ * @return {String|Boolean}
  */
 const subscribeOnce = (topic, handler) => {
   return subscribe(topic, function () {
@@ -268,17 +278,31 @@ const clear = () => {
 // eslint-disable-next-line no-unused-vars
 const Subscribers = {
   /**
-   * 发布订阅主题信息
+   * （异步）发布订阅主题信息
    * ========================================================================
    * @method publish
    * @see publish
    * @param {String} topic - （必须）主题名称
    * @param {Object} data - （必须）数据对象
    * @param {Boolean} async - (可选) 是否异步发布
-   * @returns {Boolean}
+   * @returns {Subscribers}
    */
   publish(topic, data, async = true) {
     publish(topic, data, async)
+
+    return this
+  },
+  /**
+   * 同步发布订阅主题信息
+   * ========================================================================
+   * @method notify
+   * @alias publish
+   * @param {String} topic - （必须）主题名称
+   * @param {Object} data - （必须）数据对象
+   * @returns {Subscribers}
+   */
+  notify(topic, data) {
+    notify(topic, data)
 
     return this
   },
@@ -289,6 +313,7 @@ const Subscribers = {
    * @see subscribe
    * @param {String} topic - （必须）主题名称
    * @param {Function} handler - （必须）主题的处理器函数
+   * @return {String|Boolean}
    */
   subscribe(topic, handler) {
     return subscribe(topic, handler)
@@ -300,6 +325,7 @@ const Subscribers = {
    * @see subscribeOnce
    * @param {String} topic - （必须）主题名称
    * @param {Function} handler - （必须）主题的处理器函数
+   * @return {String|Boolean}
    */
   subscribeOnce(topic, handler) {
     return subscribeOnce(topic, handler)
@@ -311,6 +337,7 @@ const Subscribers = {
    * @see unsubscribe
    * @param {String} topic - （必须）订阅的主题
    * @param {Function|String} [token] - （可选）订阅主题的处理器函数或者唯一 Id 值
+   * @returns {Subscribers}
    */
   unsubscribe(topic, token) {
     unsubscribe(topic, token)
@@ -336,7 +363,7 @@ const Subscribers = {
    * @method deleteSubscriber
    * @see deleteSubscriber
    * @param {String} topic - （必须）主题名称
-   * @returns {Boolean}
+   * @returns {Subscribers}
    */
   deleteSubscriber(topic) {
     deleteSubscriber(topic)
@@ -349,7 +376,7 @@ const Subscribers = {
    * @method deleteSubscribers
    * @see deleteSubscribers
    * @param {String} topic - （必须）主题名称
-   * @returns {Boolean}
+   * @returns {Subscribers}
    */
   deleteSubscribers(topic) {
     deleteSubscribers(topic)
@@ -361,6 +388,7 @@ const Subscribers = {
    * ========================================================================
    * @method clear
    * @see clear
+   * @returns {Subscribers}
    */
   clear() {
     clear()

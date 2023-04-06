@@ -8,6 +8,7 @@ import guid from './guid'
  * @method subscribe
  * @param {String} topic - （必须）主题名称
  * @param {Function} handler - （必须）主题的处理器函数
+ * @return {String|Boolean}
  */
 const subscribe = (topic, handler) => {
   const token = guid()
