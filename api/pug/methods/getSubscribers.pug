@@ -1,0 +1,31 @@
+section.section
+  header.section__header
+    h3#method-getSubscribers.section__h3 getSubscribers([topic])
+  div.section__content
+    h4.section__h4 Description
+    p 获取全部或者包含 topic 主题的订阅者信息。
+    h4.section__h4 Parameters
+    h5.section__h4 topic
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd String
+    p （可选）主题名称。
+    ul
+      li 传递 topic 参数，返回包含 topic 主题的订阅者信息;
+      li 不传递 topic 参数，返回全部订阅者信息；
+    h4.section__h4 Returns
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd Array。
+    p 返回全部或者包含 topic 主题的订阅者数组对象信息。
+    pre.section__pre
+      code.section__code.
+        Subscribers.subscribe('author', handlerAuthor)
+        Subscribers.subscribe('author.career', handlerCareer)
+        Subscribers.subscribe('author.career.years', handlerYears)
+
+        // 获取 author 主题订阅者信息
+        Subscribers.getSubscribers('author')
+
+        // 获取所有订阅者信息
+        Subscribers.getSubscribers()

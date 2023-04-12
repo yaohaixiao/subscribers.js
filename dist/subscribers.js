@@ -57,7 +57,7 @@ var isFunction = function isFunction(val) {
  * @param {String} topic - （必须）主题名称
  * @returns {Boolean}
  */
-var hasDirectSubscribersFor = function hasDirectSubscribersFor(topic) {
+var _hasDirectSubscribersFor = function hasDirectSubscribersFor(topic) {
   return hasOwn(_subscribers, topic) && _subscribers[topic].length > 0;
 };
 
@@ -68,13 +68,13 @@ var hasDirectSubscribersFor = function hasDirectSubscribersFor(topic) {
  * @param {String} topic - （必须）主题名称
  * @returns {Boolean}
  */
-var hasSubscribers = function hasSubscribers(topic) {
-  var found = hasDirectSubscribersFor(topic);
+var _hasSubscribers = function hasSubscribers(topic) {
+  var found = _hasDirectSubscribersFor(topic);
   var position = topic.lastIndexOf('.');
   while (!found && position !== -1) {
     topic = topic.substring(0, position);
     position = topic.lastIndexOf('.');
-    found = hasDirectSubscribersFor(topic);
+    found = _hasDirectSubscribersFor(topic);
   }
   return found;
 };
@@ -92,7 +92,7 @@ var hasSubscribers = function hasSubscribers(topic) {
 var _publish = function publish(topic, data) {
   var async = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
   var execute = function execute(topic) {
-    if (!hasDirectSubscribersFor(topic)) {
+    if (!_hasDirectSubscribersFor(topic)) {
       return false;
     }
     _subscribers[topic].forEach(function (subscriber) {
@@ -109,7 +109,7 @@ var _publish = function publish(topic, data) {
     }
     execute(topic);
   };
-  if (!hasSubscribers(topic)) {
+  if (!_hasSubscribers(topic)) {
     return false;
   }
   if (async) {
@@ -166,7 +166,7 @@ var _subscribe = function subscribe(topic, handler) {
 var _unsubscribe = function unsubscribe(topic, token) {
   var index = -1;
   var subscriber = [];
-  if (!hasSubscribers(topic)) {
+  if (!_hasSubscribers(topic)) {
     return false;
   }
   subscriber = _subscribers[topic];
@@ -252,7 +252,7 @@ var _deleteSubscriber = function deleteSubscriber(topic) {
  * @returns {Boolean}
  */
 var _deleteSubscribers = function deleteSubscribers(topic) {
-  if (!hasSubscribers(topic)) {
+  if (!_hasSubscribers(topic)) {
     return false;
   }
   Object.keys(_subscribers).forEach(function (subscriber) {
@@ -344,6 +344,26 @@ var Subscribers = {
    */
   getSubscriptions: function getSubscriptions(topic) {
     return getSubscribers(topic);
+  },
+  /**
+   * 判断是否存在特定 topic 指定的订阅者信息
+   * ========================================================================
+   * @method hasDirectSubscribersFor
+   * @param {String} topic - （必须）主题名称
+   * @returns {Boolean}
+   */
+  hasDirectSubscribersFor: function hasDirectSubscribersFor(topic) {
+    return _hasDirectSubscribersFor(topic);
+  },
+  /**
+   * 判断是否存在包含 topic 指定的订阅者信息
+   * ========================================================================
+   * @method hasSubscribers
+   * @param {String} topic - （必须）主题名称
+   * @returns {Boolean}
+   */
+  hasSubscribers: function hasSubscribers(topic) {
+    return _hasSubscribers(topic);
   },
   /**
    * 删除特定 topic 主题的订阅者信息

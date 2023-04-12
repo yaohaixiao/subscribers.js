@@ -7,7 +7,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/@yaohaixiao/subscribers.js)](https://npmcharts.com/compare/@yaohaixiao/subscribers.js?minimal=true)
 [![MIT License](https://img.shields.io/github/license/yaohaixiao/subscribers.js.svg)](https://github.com/yaohaixiao/delegate.js/blob/master/LICENSE)
 
-又一个小巧简单而且实用的发布/订阅 JavaScript 工具库！
+subscribers.js 小巧且实用的发布/订阅 JavaScript 工具库！
 
 
 ## Features
@@ -111,9 +111,9 @@ subscribers.js 中封装了一系列常用方法，并且适用起来非常方�
 
 订阅主题，并给出处理器函数。
 
-#### Parameters
+##### Parameters
 
-##### topic
+###### topic
 
 Type: `String`
 
@@ -121,7 +121,7 @@ Default: ``
 
 （必须）主题名称。
 
-##### handler
+###### handler
 
 Type: `Function`
 
@@ -141,9 +141,9 @@ Subscribers.subscribe('author.career.years', handlerYears)
 
 订阅主题，并给出处理器函数，仅执行一次。
 
-#### Parameters
+##### Parameters
 
-##### topic
+###### topic
 
 Type: `String`
 
@@ -151,7 +151,7 @@ Default: ``
 
 （必须）主题名称。
 
-##### handler
+###### handler
 
 Type: `Function`
 
@@ -172,9 +172,9 @@ Subscribers.publish('author', 'again')
 
 发布订阅主题信息。subscribers.js 主题默认是异步发布的。确保在消费者处理主题时，主题的发起者不会被阻止。 当然 publish() 方法也支持同步主题发布。
 
-#### Parameters
+##### Parameters
 
-##### topic
+###### topic
 
 Type: `String`
 
@@ -182,13 +182,13 @@ Default: ``
 
 （必须）主题名称。
 
-##### data
+###### data
 
 Type: `Object`
 
 Default: ``
 
-必须）消息传递的数据对象。
+（必须）消息传递的数据对象。
 
 ##### async
 
@@ -209,13 +209,13 @@ Subscribers.publish('author', 'ok')
 Subscribers.publish('author', 'ok', false)
 ```
 
-#### unsubscribe(topic[, token])
+#### notify(topic, data)
 
-取消订阅主题。
+同步发布订阅主题信息。
 
-#### Parameters
+##### Parameters
 
-##### topic
+###### topic
 
 Type: `String`
 
@@ -223,7 +223,39 @@ Default: ``
 
 （必须）主题名称。
 
-##### token
+###### data
+
+Type: `Object`
+
+Default: ``
+
+必须）消息传递的数据对象。
+
+```js
+Subscribers.subscribe('author', handlerAuthor)
+Subscribers.subscribe('author.career', handlerCareer)
+
+// 异步发布
+Subscribers.notify('author', 'ok')
+// 同步发布
+Subscribers.publish('author.career', 'ok')
+```
+
+#### unsubscribe(topic[, token])
+
+取消订阅主题。
+
+##### Parameters
+
+###### topic
+
+Type: `String`
+
+Default: ``
+
+（必须）主题名称。
+
+###### token
 
 Type: `Function|String`
 
@@ -237,23 +269,27 @@ const token = Subscribers.subscribe('author.career', handlerCareer)
 
 // 取消订阅 author 主题
 Subscribers.unsubscribe('author',handlerAuthor)
+
 // 取消订阅 author.career 主题
-Subscribers.publish('author.career', token)
+Subscribers.unsubscribe('author.career', token)
 ```
 
-#### getSubscriptions([topic])
+#### getSubscribers([topic])
 
 获取全部或者包含 topic 主题的订阅者信息。
 
-#### Parameters
+##### Parameters
 
-##### topic
+###### topic
 
 Type: `String`
 
 Default: ``
 
-（可选）主题名称。传递 topic 参数，返回包含 topic 主题的订阅者信息，不传递 topic 参数，返回全部订阅者信息。
+（可选）主题名称。
+
+- 传递 topic 参数，返回包含 topic 主题的订阅者信息；
+- 不传递 topic 参数，返回全部订阅者信息；
 
 ```js
 Subscribers.subscribe('author', handlerAuthor)
@@ -261,19 +297,69 @@ Subscribers.subscribe('author.career', handlerCareer)
 Subscribers.subscribe('author.career.years', handlerYears)
 
 // 获取 author 主题订阅者信息
-Subscribers.getSubscriptions('author')
+Subscribers.getSubscribers('author')
 
 // 获取所有订阅者信息
-Subscribers.getSubscriptions()
+Subscribers.getSubscribers()
+```
+
+#### hasDirectSubscribersFor(topic)
+
+判断是否存在特定 topic 指定的订阅者信息。
+
+##### Parameters
+
+###### topic
+
+Type: `String`
+
+Default: ``
+
+（必须）主题名称。
+
+```js
+Subscribers.subscribe('author', handlerAuthor)
+Subscribers.subscribe('author.career.years', handlerYears)
+
+Subscribers.hasDirectSubscribersFor('author.career.years')
+// => true
+
+Subscribers.hasDirectSubscribersFor('author.career.year')
+// => false
+```
+
+#### hasSubscribers(topic)
+
+判断是否存在包含 topic 指定的订阅者信息。
+
+##### Parameters
+
+###### topic
+
+Type: `String`
+
+Default: ``
+
+（必须）主题名称。
+
+```js
+Subscribers.subscribe('author', handlerAuthor)
+Subscribers.subscribe('author.career.years', handlerYears)
+
+Subscribers.hasSubscribers('author.career.years')
+// => true
+
+Subscribers.hasSubscribers('author.career.year')
+// => true 因为包含 author 和 author.career 主题
 ```
 
 #### deleteSubscriber(topic)
 
 删除特定 topic 主题的订阅者信息。
 
-#### Parameters
+##### Parameters
 
-##### topic
+###### topic
 
 Type: `String`
 
@@ -285,16 +371,16 @@ Default: ``
 Subscribers.subscribe('author', handlerAuthor)
 
 // 删除 author 主题相关的所有信息
-Subscribers.deleteSubscriber('autor')
+Subscribers.deleteSubscriber('author')
 ```
 
 #### deleteSubscribers(topic)
 
 删除包含 topic 主题的订阅者信息。
 
-#### Parameters
+##### Parameters
 
-##### topic
+###### topic
 
 Type: `String`
 

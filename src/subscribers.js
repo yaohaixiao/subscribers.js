@@ -358,6 +358,26 @@ const Subscribers = {
     return getSubscribers(topic)
   },
   /**
+   * 判断是否存在特定 topic 指定的订阅者信息
+   * ========================================================================
+   * @method hasDirectSubscribersFor
+   * @param {String} topic - （必须）主题名称
+   * @returns {Boolean}
+   */
+  hasDirectSubscribersFor(topic) {
+    return hasDirectSubscribersFor(topic)
+  },
+  /**
+   * 判断是否存在包含 topic 指定的订阅者信息
+   * ========================================================================
+   * @method hasSubscribers
+   * @param {String} topic - （必须）主题名称
+   * @returns {Boolean}
+   */
+  hasSubscribers(topic) {
+    return hasSubscribers(topic)
+  },
+  /**
    * 删除特定 topic 主题的订阅者信息
    * ========================================================================
    * @method deleteSubscriber

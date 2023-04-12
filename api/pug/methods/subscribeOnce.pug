@@ -1,0 +1,30 @@
+section.section
+  header.section__header
+    h3#method-subscribeOnce.section__h3 subscribeOnce(topic, handler)
+  div.section__content
+    h4.section__h4 Description
+    p 订阅主题，并给出处理器函数，仅执行一次。
+    h4.section__h4 Parameters
+    h5.section__h4 topic
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd String
+    p （必须）主题名称。
+    h5.section__h4 handler
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd Function
+    p （（必须）主题的处理器函数。
+    h4.section__h4 Returns
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd String。
+    p 唯一的 token 字符串。
+    pre.section__pre
+      code.section__code.
+        Subscribers.subscribeOnce('author', handlerAuthor)
+
+        Subscribers.publish('author', 'ok')
+
+        // handlerAuthor() 函数将不再执行
+        Subscribers.publish('author', 'again')
