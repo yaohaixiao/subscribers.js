@@ -90,7 +90,6 @@
         entries.forEach((entry) => {
           if (entry.intersectionRatio > 0) {
             const id = entry.target.getAttribute('id')
-            console.log('id', id)
             const $anchor = document.querySelector(
               `.aside__anchor[href="#${id}"]`
             )
@@ -121,7 +120,7 @@
     syncNav()
 
     $anchors.forEach(($anchor) => {
-      $anchor.click('.aside__anchor', scrollToAnchor)
+      $anchor.addEventListener('click', scrollToAnchor)
     })
 
     $up.addEventListener('click', scrollToTop)
