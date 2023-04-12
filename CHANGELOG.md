@@ -1,3 +1,12 @@
+# [0.5.0](https://github.com/yaohaixiao/subscribers.js/compare/0.4.0...0.5.0) (2023-04-12)
+
+
+### Features
+
+* 添加 hasDirectSubscribersFor() 和 hasSubscribers() 方法； ([8fa56ba](https://github.com/yaohaixiao/subscribers.js/commit/8fa56ba4df478ee7cc4f72294c075aa7095551f3))
+
+
+
 # [0.4.0](https://github.com/yaohaixiao/subscribers.js/compare/0.3.0...0.4.0) (2023-04-06)
 
 

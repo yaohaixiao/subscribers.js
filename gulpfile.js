@@ -120,10 +120,7 @@ const buildSourceScript = () => {
 
 const buildDocsScript = () => {
   return gulp
-    .src([
-      './dist/subscribers.min.js',
-      './api/js/scroll.js'
-    ])
+    .src(['./dist/subscribers.min.js', './api/js/scroll.js'])
     .pipe(concat('docs.min.js'))
     .pipe(uglify())
     .pipe(gulp.dest('./docs/js'))

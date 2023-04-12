@@ -1,4 +1,4 @@
-(function() {
+;(function () {
   let timer = null
   let playing = false
   let $active = null
@@ -32,7 +32,10 @@
 
       scrollTop += step
 
-      if ((scrollTop <= top && distance < 0) || (scrollTop >= top && distance > 0)) {
+      if (
+        (scrollTop <= top && distance < 0) ||
+        (scrollTop >= top && distance > 0)
+      ) {
         scrollTop = top
         playing = false
       }
@@ -62,7 +65,7 @@
     scroll()
   }
 
-  const scrollToAnchor = function(evt) {
+  const scrollToAnchor = function (evt) {
     const $target = evt.target
     const id = $target.href.split('#')[1]
     const $method = document.querySelector(`#${id}`)
@@ -82,24 +85,29 @@
   }
 
   const syncNav = () => {
-    const Observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.intersectionRatio > 0) {
-          const id = entry.target.getAttribute('id')
-          console.log('id', id)
-          const $anchor = document.querySelector(`.aside__anchor[href="#${id}"]`)
-          const $item = $anchor.parentNode
+    const Observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.intersectionRatio > 0) {
+            const id = entry.target.getAttribute('id')
+            console.log('id', id)
+            const $anchor = document.querySelector(
+              `.aside__anchor[href="#${id}"]`
+            )
+            const $item = $anchor.parentNode
 
-          if ($active) {
-            $active.classList.remove('active')
+            if ($active) {
+              $active.classList.remove('active')
+            }
+            $item.classList.add('active')
+            $active = $item
           }
-          $item.classList.add('active')
-          $active = $item
-        }
-      })
-    }, {
-      root: $main
-    })
+        })
+      },
+      {
+        root: $main
+      }
+    )
 
     $main.querySelectorAll('.section__h3').forEach((header) => {
       Observer.observe(header)
@@ -121,4 +129,4 @@
   }
 
   setup()
-})();
+})()
