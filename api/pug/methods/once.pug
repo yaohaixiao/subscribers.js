@@ -1,0 +1,37 @@
+section.section
+  header.section__header
+    h3#method-once.section__h3 once(topic, handler)
+  div.section__content
+    h4.section__h4 Description
+    p once() 方法用来订阅主题，并给出处理器函数，仅执行一次。
+    h4.section__h4 Parameters
+    h5.section__h4 topic
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd String
+    p （必须）主题名称。
+    h5.section__h4 handler
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd Function
+    p （（必须）主题的处理器函数。
+    h4.section__h4 Returns
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd String。
+    p 唯一的 token 字符串，例如：'guid-1'。
+    pre.section__pre
+      code.section__code.
+        import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+        const handler = () => {
+          console.log('author is Robert')
+        }
+
+        subscribers.once('author', handler)
+
+        // 发布消息
+        subscribers.emit('author')
+
+        // 再次发布 handler 将不再执行
+        subscribers.emit('author')

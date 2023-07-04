@@ -18,14 +18,21 @@ section.section
     h4.section__h4 Returns
     dl.section__dl
       dt.section__dt Type：
-      dd.section__dd Object。
-    p Subscribers 对象。
+      dd.section__dd subscribers。
+    p subscribers 对象，以便实现链式调用。
     pre.section__pre
       code.section__code.
-        Subscribers.subscribe('author', handlerAuthor)
-        Subscribers.subscribe('author.career', handlerCareer)
+        import subscribers from '@yaohaixiao/subscribers.js/subscribers'
 
-        // 异步发布
-        Subscribers.notify('author', 'ok')
-        // 同步发布
-        Subscribers.publish('author.career', 'ok')
+        const handler = (msg) => {
+          console.log(msg)
+        }
+
+        subscribers.on('author', handler)
+        subscribers.on('career', handler)
+        subscribers.on('years', handler)
+
+        // 依次输出：'author'、'career'、'years'
+        subscribers.notify('author', 'ok') // -> 'ok'
+        subscribers.notify('career', 'programmer') // -> 'programmer'
+        subscribers.notify('years', 19) // -> 19

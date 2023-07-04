@@ -1,0 +1,39 @@
+section.section
+  header.section__header
+    h3#method-on.section__h3 on(topic, handler)
+  div.section__content
+    h4.section__h4 Description
+    p on() 方法用来订阅主题，并给出处理器函数。
+    h4.section__h4 Parameters
+    h5.section__h4 topic
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd String
+    p （必须）主题名称。
+    h5.section__h4 handler
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd Function
+    p （（必须）主题的处理器函数。
+    h4.section__h4 Returns
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd String。
+    p 唯一的 token 字符串，例如：'guid-1'。
+    pre.section__pre
+      code.section__code.
+        import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+        const handler = (author) => {
+          console.log(`Author: ${author}`)
+        }
+
+        subscribers.on('author', handler)
+
+        // 支持命名空间形式的主题的订阅
+        subscribers.on('author.career', handler)
+        subscribers.on('author.career.years', handler)
+
+        subscribers.emit('author', 'Yaohaixiao') // -> `Author: Yaohaixiao`
+        subscribers.emit('author.career', 'Programmer') // -> `Author: Programmer`
+        subscribers.emit('author.career.years', 23) // -> `Author: 23`

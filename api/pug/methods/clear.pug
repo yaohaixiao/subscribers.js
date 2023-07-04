@@ -3,17 +3,25 @@ section.section
     h3#method-clear.section__h3 clear()
   div.section__content
     h4.section__h4 Description
-    p 清理所有订阅者（主题和处理器的）信息。
+    p clear() 方法用于清理所有订阅者（主题和处理器的）信息。
     h4.section__h4 Returns
     dl.section__dl
       dt.section__dt Type：
-      dd.section__dd Object。
-    p Subscribers 对象。
+      dd.section__dd subscribers。
+    p subscribers 对象，以便实现链式调用。
     pre.section__pre
       code.section__code.
-        Subscribers.subscribe('author', handlerAuthor)
-        Subscribers.subscribe('author.career', handlerCareer)
-        Subscribers.subscribe('author.career.years', handlerYears)
+        import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+        const handler = (msg) => {
+          console.log('handler:', msg)
+        }
+
+        subscribers.on('author', handler)
+        subscribers.on('author.career', handler)
+        subscribers.on('author.career.years', handler)
 
         // 清理所有订阅者（主题和处理器的）信息
-        Subscribers.clear()
+        subscribers.clear()
+
+        subscribers.has() // -> false

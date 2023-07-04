@@ -3,7 +3,7 @@
 
 ### Features
 
-* 添加 hasDirectSubscribersFor() 和 hasSubscribers() 方法； ([8fa56ba](https://github.com/yaohaixiao/subscribers.js/commit/8fa56ba4df478ee7cc4f72294c075aa7095551f3))
+* 添加 _hasDirectSubscribersFor() 和 has() 方法； ([8fa56ba](https://github.com/yaohaixiao/subscribers.js/commit/8fa56ba4df478ee7cc4f72294c075aa7095551f3))
 
 
 
@@ -21,7 +21,7 @@
 
 ### Features
 
-* publish() 方法支持异步或者同步发布 ([ca71187](https://github.com/yaohaixiao/subscribers.js/commit/ca711874df594d66e687659155c6d22f8899f5fd))
+* emit() 方法支持异步或者同步发布 ([ca71187](https://github.com/yaohaixiao/subscribers.js/commit/ca711874df594d66e687659155c6d22f8899f5fd))
 
 
 

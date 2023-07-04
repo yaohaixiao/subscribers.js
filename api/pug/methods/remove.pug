@@ -1,0 +1,40 @@
+section.section
+  header.section__header
+    h3#method-remove.section__h3 remove(topic)
+  div.section__content
+    h4.section__h4 Description
+    p remove() 删除特定（单个或多个） topic 主题的订阅者信息。
+    h4.section__h4 Parameters
+    h5.section__h4 topic
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd String | Array
+    p （必须）主题名称。
+    ul
+      li String 类型：删除单个 topic 主题的订阅者信息;
+      li Array 类型：删除多个 topic 主题的订阅者信息；
+    h4.section__h4 Returns
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd subscribers。
+    p subscribers 对象，以便实现链式调用。
+    pre.section__pre
+      code.section__code.
+        import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+        const handler = (msg) => {
+          console.log('handler:', msg)
+        }
+
+        const callback = (msg) => {
+          console.log('callback:', msg)
+        }
+
+        subscribers.on('author', handler)
+        subscribers.on('publish', callback)
+
+        // 删除 author 主题相关的所有信息
+        subscribers.remove('author')
+
+        // 同时删除 author 和 publish 主题相关的所有信息
+        subscribers.remove(['author', 'publish'])

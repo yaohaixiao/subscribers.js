@@ -1,0 +1,74 @@
+section.section
+  header.section__header
+    h3#method-get.section__h3 get([topic])
+  div.section__content
+    h4.section__h4 Description
+    p get() 方法用来获取全部或者包含 topic 主题或者订阅 token 的订阅者信息。
+    h4.section__h4 Parameters
+    h5.section__h4 topic
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd String
+    p （可选）主题名称。
+    ul
+      li 不传递 topic 参数，返回全部订阅者信息；
+      li 传递 topic 参数
+        ul
+          li 如果是 topic 主题：返回包含 topic 主题的订阅者信息；
+          li 如果是订阅 token：返回包含此 token 信息的 topic 主题的订阅者信息；
+    h4.section__h4 Returns
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd Array | Object。
+    p 返回全部或者包含 topic 主题或者订阅 token 的订阅者信息。
+    pre.section__pre
+      code.section__code.
+        import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+        const handler = (msg) => {
+          console.log('handler:', msg)
+        }
+
+        subscribers.on('author', handler)
+        subscribers.on('career', handler)
+        subscribers.on('years', handler)
+
+        const token = subscribers.on('years', handler)
+
+        // 获取 author 主题订阅者信息
+        subscribers.get('author')
+        // -> 返回 author 主题的订阅信息
+        // [
+        //   topic: 'author',
+        //   callback: handler,
+        //   token: 'guid-1'
+        // ]
+
+        subscribers.get(token)
+        // -> 返回 career 主题的订阅信息
+        // [
+        //   topic: 'career',
+        //   callback: handler,
+        //   token: 'guid-2'
+        // ]
+
+        // 获取所有订阅者信息
+        subscribers.get()
+        // -> 返回所有主题的订阅信息
+        // {
+        //   'author': [
+        //     topic: 'author',
+        //     callback: handler,
+        //     token: 'guid-1'
+        //   ]
+        //   'career': [
+        //     topic: 'career',
+        //     callback: handler,
+        //     token: 'guid-2'
+        //   ]
+        //   'years': [
+        //     topic: 'years',
+        //     callback: handler,
+        //     token: 'guid-3'
+        //   ]
+        // }

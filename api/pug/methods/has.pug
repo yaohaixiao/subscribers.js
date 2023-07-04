@@ -1,0 +1,52 @@
+section.section
+  header.section__header
+    h3#method-has.section__h3 has([topic, isDirect = true])
+  div.section__content
+    h4.section__h4 Description
+    p has() 方法判断是否存在指定或者包含 topic 的订阅者信息。
+    h4.section__h4 Parameters
+    h5.section__h4 topic
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd String
+    p （可选）主题名称。
+    ul
+      li 传递 topic 参数：判断指定 topic 或者消息主题的命名空间中包含 topic 的订阅信息；
+      li 不传递 topic 参数：判断是否包含任何订阅信息；
+    h5.section__h4 isDirect
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd Boolean
+    p （可选）是否为指定 topic，默认值: true。
+    ul
+      li true：匹配完全相同的主题或者主题的命名空间中包含 topic 的订阅；
+      li false：只匹配与指定 topic 主题完全相同的主题；
+    h4.section__h4 Returns
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd Boolean。
+    ul
+      li true：有相关的订阅信息；
+      li false：无相关的订阅信息；
+    pre.section__pre
+      code.section__code.
+        import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+        const handler = (msg) => {
+          console.log('handler:', msg)
+        }
+
+        subscribers.on('author', handler)
+        subscribers.on('author.career.years', handler)
+
+        subscribers.has('author.career')
+        // => true - 因为包含 author 主题
+
+        subscribers.has('author.career.year')
+        // => true 因为有完全匹配的主题
+
+        subscribers.has('author.career', false)
+        // => false 因为没有完全匹配的主题
+
+        subscribers.has()
+        // => true

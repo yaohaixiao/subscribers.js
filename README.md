@@ -7,14 +7,19 @@
 [![npm downloads](https://img.shields.io/npm/dm/@yaohaixiao/subscribers.js)](https://npmcharts.com/compare/@yaohaixiao/subscribers.js?minimal=true)
 [![MIT License](https://img.shields.io/github/license/yaohaixiao/subscribers.js.svg)](https://github.com/yaohaixiao/delegate.js/blob/master/LICENSE)
 
-subscribers.js 小巧且实用的发布/订阅 JavaScript 工具库！
+subscribers.js - 小巧且实用的 JavaScript 发布/订阅工具库。
+
+
+## 项目初衷
+
+编写 subscribers.js 的主要在日常的 JavaScript 开发中经常需要使用到发布/订阅模式。所以自己也整理了一个。虽然简单，但基本的功能都有了，还是挺好用的。这个项目的 API 文档就使用到了 subscribers.js。
 
 
 ## Features
 
 - 原生 JavaScript 编写，无任何依赖；
 - 基于 topic 主题的消息，且支持命名空间的订阅/发布；
-- 支持异/同步 publish 消息；
+- 支持异/同步 发布消息；
 - 支持 UMD 规范，同时也提供 ES6 模块调用；
 - API 接口调用简单便捷；
 
@@ -43,77 +48,83 @@ npm i -S @yaohaixiao/subscribers.js
 #### CDN 调用 JS 文件
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/yaohaixiao/subscribers.js/dist/subscribers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yaohaixiao/subscribers.js/subscribers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/yaohaixiao/subscribers.js/subscribers.core.min.js"></script>
 ```
 
 #### 本地调用 JS 文件
 
 ```html
 <script src="/path/to/subscribers.min.js"></script>
+<script src="/path/to/subscribers.core.min.js"></script>
 ```
 
 ### Node.js 中调用
 
 ```js
-const Subscribers = require('@yaohaixiao/subscribers.js')
+const subscribers = require('@yaohaixiao/subscribers.js')
 ```
 
 ### ES6 模块中调用
 
 ```js
-// 调用 Subscribers 对象
-import Subscribers from '@yaohaixiao/subscribers.js/esm/subscribers'
+// 调用完整功能的 subscribers 对象
+import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+// 调用 Core 版本的 subscribers 对象，仅包含以下方法：
+// on()
+// emit()
+// off()
+import subscribers from '@yaohaixiao/subscribers.js/subscribers.core'
 ```
 
 ## Usage
 
 ```js
-import Subscribers from '@yaohaixiao/subscribers.js'
+import subscribers from '@yaohaixiao/subscribers.js/subscribers'
 
 // 创建订阅主题的函数
 const handler = (msg, data) => {
     console.log( msg, data )
 }
 
-/* 订阅主题 */
+/* ==== 订阅主题 ==== */
 // 将函数添加到特定主题的订阅者列表中
-Subscribers.subscribe('log', handler)
+subscribers.on('log', handler)
 // 采用命名空间式的消息主题
-Subscribers.subscribe('log.info', handler)
-Subscribers.subscribe('log.info.update', handler)
+subscribers.on('log.info', handler)
+subscribers.on('log.info.update', handler)
 
-/* 发布主题 */
+/* ==== 发布主题 ==== */
 // 发布一个（名为：log）消息，log 会触发
-Subscribers.publish('log', 'hello world!')
+subscribers.emit('log', 'hello world!')
 // log/log.info/log.info.update 主题的处理器函数都将执行
-Subscribers.publish('log.info.update', `hello world! it's update!`)
+subscribers.emit('log.info.update', `hello world! it's update!`)
 
-/* 取消订阅 */
+/* ==== 取消订阅 ==== */
 // 将 handler 函数从 log 主题中订阅者列表中移除
-Subscribers.unsubscribe('log', handler)
+subscribers.off('log', handler)
 
-const token = Subscribers.subscribe('alert', handler)
+const token = Subscribers.on('alert', handler)
 
 // 将 handler 函数从 alert 主题中订阅者列表中移除
-Subscribers.unsubscribe('alert', token)
+subscribers.off('alert', token)
 
 // 移除 log 主题及订阅者列表
-Subscribers.unsubscribe('log')
+subscribers.off('log')
 ```
 
 ## API 文档
 
 subscribers.js 中封装了一系列常用方法，并且适用起来非常方便。
 
-### methods
-
-#### subscribe(topic, handler)
+### on(topic, handler)
 
 订阅主题，并给出处理器函数。
 
-##### Parameters
+#### Parameters
 
-###### topic
+##### topic
 
 Type: `String`
 
@@ -121,7 +132,7 @@ Default: ``
 
 （必须）主题名称。
 
-###### handler
+##### handler
 
 Type: `Function`
 
@@ -129,21 +140,39 @@ Default: ``
 
 （必须）主题的处理器函数。
 
+#### Returns
+
+Type: `String`
+
+唯一的 token 字符串，例如：'guid-1'。
+
 ```js
-Subscribers.subscribe('author', handlerAuthor)
+import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+const handler = () => {
+  console.log('author is Robert')
+}
+
+subscribers.on('author', handler)
 
 // 支持命名空间形式的主题的订阅
-Subscribers.subscribe('author.career', handlerCareer)
-Subscribers.subscribe('author.career.years', handlerYears)
+subscribers.on('author.career', handler)
+subscribers.on('author.career.years', handler)
+
+// 发布消息
+subscribers.emit('author', 'Yaohaixiao') // -> `Author: Yaohaixiao`
+subscribers.emit('author.career', 'Programmer') // -> `Author: Programmer`
+subscribers.emit('author.career.years', 23) // -> `Author: 23`
 ```
 
-#### subscribeOnce(topic, handler)
 
-订阅主题，并给出处理器函数，仅执行一次。
+### once(topic, handler)
 
-##### Parameters
+once() 方法用于订阅主题，并给出处理器函数，仅执行一次。
 
-###### topic
+#### Parameters
+
+##### topic
 
 Type: `String`
 
@@ -151,7 +180,7 @@ Default: ``
 
 （必须）主题名称。
 
-###### handler
+##### handler
 
 Type: `Function`
 
@@ -159,22 +188,38 @@ Default: ``
 
 （必须）主题的处理器函数。
 
+#### Returns
+
+Type: `String`
+
+唯一的 token 字符串，例如：'guid-1'。
+
 ```js
-Subscribers.subscribeOnce('author', handlerAuthor)
+import subscribers from '@yaohaixiao/subscribers.js/subscribers'
 
-Subscribers.publish('author', 'ok')
+const handler = () => {
+  console.log('author is Robert')
+}
 
-// handlerAuthor() 函数将不再执行
-Subscribers.publish('author', 'again')
+subscribers.once('author', handler)
+
+// 发布消息
+subscribers.emit('author')
+
+// 再次发布 handler 将不再执行
+subscribers.emit('author')
 ```
 
-#### publish(topic, data[, async = true])
 
-发布订阅主题信息。subscribers.js 主题默认是异步发布的。确保在消费者处理主题时，主题的发起者不会被阻止。 当然 publish() 方法也支持同步主题发布。
+#### emit(topic, data[, async = true])
 
-##### Parameters
+emit() 用于发布订阅主题信息。
 
-###### topic
+subscribers.js 默认是采用异步方式发布的。以确保在消费者处理主题时，主题的发起者不会被阻止。 当然 emit() 方法也支持同步主题发布。
+
+#### Parameters
+
+##### topic
 
 Type: `String`
 
@@ -182,7 +227,7 @@ Default: ``
 
 （必须）主题名称。
 
-###### data
+##### data
 
 Type: `Object`
 
@@ -198,24 +243,42 @@ Default: `true`
 
 (可选) 是否异步发布。默认值：true。
 
+- 当 async 设置为 true（默认） 时，异步发布；
+- 当 async 设置为 false 时，同步发布；
+
+#### Returns
+
+Type: `subscribers`
+
+subscribers 对象，以便实现链式调用。
+
 ```js
-Subscribers.subscribe('author', handlerAuthor)
-Subscribers.subscribe('author.career', handlerCareer)
-Subscribers.subscribe('author.career.years', handlerYears)
+import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+const handler = (msg) => {
+  console.log(msg)
+}
+
+subscribers.on('author', handler)
+subscribers.on('career', handler)
+subscribers.on('years', handler)
 
 // 异步发布
-Subscribers.publish('author', 'ok')
+subscribers.emit('author', 'ok') // -> 'ok'
+
 // 同步发布
-Subscribers.publish('author', 'ok', false)
+// 延迟10毫秒：应该看输出 ok 后输出 programmer
+subscribers.emit('career', 'programmer', false) // -> 'programmer'
 ```
 
-#### notify(topic, data)
 
-同步发布订阅主题信息。
+### notify(topic, data)
 
-##### Parameters
+notify() 用于同步发布订阅主题信息，是 emit() 方法的别名。
 
-###### topic
+#### Parameters
+
+##### topic
 
 Type: `String`
 
@@ -223,7 +286,7 @@ Default: ``
 
 （必须）主题名称。
 
-###### data
+##### data
 
 Type: `Object`
 
@@ -231,23 +294,37 @@ Default: ``
 
 必须）消息传递的数据对象。
 
-```js
-Subscribers.subscribe('author', handlerAuthor)
-Subscribers.subscribe('author.career', handlerCareer)
+#### Returns
 
-// 异步发布
-Subscribers.notify('author', 'ok')
-// 同步发布
-Subscribers.publish('author.career', 'ok')
+Type: `subscribers`
+
+subscribers 对象，以便实现链式调用。
+
+```js
+import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+const handler = (msg) => {
+  console.log(msg)
+}
+
+subscribers.on('author', handler)
+subscribers.on('career', handler)
+subscribers.on('years', handler)
+
+// 依次输出：'author'、'career'、'years'
+subscribers.notify('author', 'ok') // -> 'ok'
+subscribers.notify('career', 'programmer') // -> 'programmer'
+subscribers.notify('years', 19) // -> 19
 ```
 
-#### unsubscribe(topic[, token])
 
-取消订阅主题。
+### off(topic[, token])
 
-##### Parameters
+off() 方法用来取消订阅主题。
 
-###### topic
+#### Parameters
+
+##### topic
 
 Type: `String`
 
@@ -255,7 +332,7 @@ Default: ``
 
 （必须）主题名称。
 
-###### token
+##### token
 
 Type: `Function|String`
 
@@ -263,24 +340,51 @@ Default: ``
 
 （可选）订阅主题的处理器函数或者唯一 Id 值。
 
+#### Returns
+
+Type: `subscribers`
+
+subscribers 对象，以便实现链式调用。
+
 ```js
-Subscribers.subscribe('author', handlerAuthor)
-const token = Subscribers.subscribe('author.career', handlerCareer)
+import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+const handler = (msg) => {
+  console.log('handler:', msg)
+}
+
+const callback = (msg) => {
+  console.log('callback:', msg)
+}
+
+subscribers.on('author', handler)
+
+const token = subscribers.on('career', handler)
+const guid = subscribers.on('career', handler)
 
 // 取消订阅 author 主题
-Subscribers.unsubscribe('author',handlerAuthor)
+subscribers.off('author', handler)
 
-// 取消订阅 author.career 主题
-Subscribers.unsubscribe('author.career', token)
+// 删除订阅 career 主题下的 handler 处理器
+subscribers.off('career', token)
+
+// 删除订阅 career 主题下的 callback 处理器
+subscribers.off('career', guid)
+
+// 订阅 career 主题下2个处理器都删除后
+// 会取消整个 author 主题订阅，因此再发布 author 主题消息
+// 不会有任何反应
+subscribers.emit('career', 'web developer')
 ```
 
-#### getSubscribers([topic])
 
-获取全部或者包含 topic 主题的订阅者信息。
+### get([topic])
 
-##### Parameters
+get() 方法用来获取全部或者包含 topic 主题或者订阅 token 的订阅者信息。
 
-###### topic
+#### Parameters
+
+##### topic
 
 Type: `String`
 
@@ -288,126 +392,199 @@ Default: ``
 
 （可选）主题名称。
 
-- 传递 topic 参数，返回包含 topic 主题的订阅者信息；
 - 不传递 topic 参数，返回全部订阅者信息；
+- 传递 topic 参数
+  - 如果是 topic 主题：返回包含 topic 主题的订阅者信息；
+  - 如果是订阅 token：返回包含此 token 信息的 topic 主题的订阅者信息；
+
+#### Returns
+
+Type: `Array | Object`
+
+返回全部或者包含 topic 主题或者订阅 token 的订阅者信息。
 
 ```js
-Subscribers.subscribe('author', handlerAuthor)
-Subscribers.subscribe('author.career', handlerCareer)
-Subscribers.subscribe('author.career.years', handlerYears)
+import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+const handler = (msg) => {
+  console.log('handler:', msg)
+}
+
+subscribers.on('author', handler)
+subscribers.on('career', handler)
+subscribers.on('years', handler)
+
+const token = subscribers.on('years', handler)
 
 // 获取 author 主题订阅者信息
-Subscribers.getSubscribers('author')
+subscribers.get('author')
+// -> 返回 author 主题的订阅信息
+// [
+//   topic: 'author',
+//   callback: handler,
+//   token: 'guid-1'
+// ]
+
+subscribers.get(token)
+// -> 返回 career 主题的订阅信息
+// [
+//   topic: 'career',
+//   callback: handler,
+//   token: 'guid-2'
+// ]
 
 // 获取所有订阅者信息
-Subscribers.getSubscribers()
+subscribers.get()
+// -> 返回所有主题的订阅信息
+// {
+//   'author': [
+//     topic: 'author',
+//     callback: handler,
+//     token: 'guid-1'
+//   ]
+//   'career': [
+//     topic: 'career',
+//     callback: handler,
+//     token: 'guid-2'
+//   ]
+//   'years': [
+//     topic: 'years',
+//     callback: handler,
+//     token: 'guid-3'
+//   ]
+// }
 ```
 
-#### hasDirectSubscribersFor(topic)
 
-判断是否存在特定 topic 指定的订阅者信息。
+### has([topic, isDirect = true])
 
-##### Parameters
+has() 方法用于判断是否存在包含 topic 指定的订阅者信息。
 
-###### topic
+#### Parameters
+
+##### topic
 
 Type: `String`
 
 Default: ``
 
-（必须）主题名称。
+（可选）主题名称。
+
+- 传递 topic 参数：判断指定 topic 或者消息主题的命名空间中包含 topic 的订阅信息；
+- 不传递 topic 参数：判断是否包含任何订阅信息；
+
+##### isDirect
+
+Type: `Boolean`
+
+Default: `true`
+
+（可选）是否完全匹配 topic。
+
+- true：匹配完全相同的主题或者主题的命名空间中包含 topic 的订阅；
+- false：只匹配与指定 topic 主题完全相同的主题；
+
+#### Returns
+
+Type: `Boolean`
+
+- true：有相关的订阅信息；
+- false：无相关的订阅信息；
 
 ```js
-Subscribers.subscribe('author', handlerAuthor)
-Subscribers.subscribe('author.career.years', handlerYears)
+import subscribers from '@yaohaixiao/subscribers.js/subscribers'
 
-Subscribers.hasDirectSubscribersFor('author.career.years')
+const handler = (msg) => {
+  console.log('handler:', msg)
+}
+
+subscribers.on('author', handler)
+subscribers.on('author.career.years', handler)
+
+subscribers.has('author.career')
+// => true - 因为包含 author 主题
+
+subscribers.has('author.career.year')
+// => true 因为有完全匹配的主题
+
+subscribers.has('author.career', false)
+// => false 因为没有完全匹配的主题
+
+subscribers.has()
 // => true
-
-Subscribers.hasDirectSubscribersFor('author.career.year')
-// => false
 ```
 
-#### hasSubscribers(topic)
 
-判断是否存在包含 topic 指定的订阅者信息。
+### remove(topic)
 
-##### Parameters
+remove() 方法用来删除特定 topic 主题的订阅者信息。
 
-###### topic
+#### Parameters
 
-Type: `String`
+##### topic
+
+Type: `String|Array`
 
 Default: ``
 
 （必须）主题名称。
 
-```js
-Subscribers.subscribe('author', handlerAuthor)
-Subscribers.subscribe('author.career.years', handlerYears)
+- String 类型：删除单个 topic 订阅信息；
+- Array 类型：删除多个 topic 订阅信息；
 
-Subscribers.hasSubscribers('author.career.years')
-// => true
+#### Returns
 
-Subscribers.hasSubscribers('author.career.year')
-// => true 因为包含 author 和 author.career 主题
-```
+Type: `subscribers`
 
-#### deleteSubscriber(topic)
-
-删除特定 topic 主题的订阅者信息。
-
-##### Parameters
-
-###### topic
-
-Type: `String`
-
-Default: ``
-
-（必须）主题名称。
+subscribers 对象，以便实现链式调用。
 
 ```js
-Subscribers.subscribe('author', handlerAuthor)
+import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+const handler = (msg) => {
+  console.log('handler:', msg)
+}
+
+const callback = (msg) => {
+  console.log('callback:', msg)
+}
+
+subscribers.on('author', handler)
+subscribers.on('publish', callback)
 
 // 删除 author 主题相关的所有信息
-Subscribers.deleteSubscriber('author')
+subscribers.remove('author')
+
+// 同时删除 author 和 publish 主题相关的所有信息
+subscribers.remove(['author', 'publish'])
 ```
 
-#### deleteSubscribers(topic)
-
-删除包含 topic 主题的订阅者信息。
-
-##### Parameters
-
-###### topic
-
-Type: `String`
-
-Default: ``
-
-（必须）主题名称。
-
-```js
-Subscribers.subscribe('author', handlerAuthor)
-Subscribers.subscribe('author.career', handlerCareer)
-Subscribers.subscribe('author.career.years', handlerYears)
-
-// 删除包含 author 或者 author.career 主题相关的所有信息
-Subscribers.deleteSubscribers('author.career')
-```
 
 #### clear()
 
-清理所有订阅者（主题和处理器的）信息
+clear() 方法用于清理所有订阅者（主题和处理器的）信息。
+
+#### Returns
+
+Type: `subscribers`
+
+subscribers 对象，以便实现链式调用。
 
 ```js
-Subscribers.subscribe('author', handlerAuthor)
-Subscribers.subscribe('author.career', handlerCareer)
-Subscribers.subscribe('author.career.years', handlerYears)
+import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+const handler = (msg) => {
+  console.log('handler:', msg)
+}
+
+subscribers.on('author', handler)
+subscribers.on('author.career', handler)
+subscribers.on('author.career.years', handler)
 
 // 清理所有订阅者（主题和处理器的）信息
-Subscribers.clear()
+subscribers.clear()
+
+subscribers.has() // -> false
 ```
 
 ## License
