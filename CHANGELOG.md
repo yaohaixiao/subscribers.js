@@ -1,3 +1,12 @@
+# [1.0.0](https://github.com/yaohaixiao/subscribers.js/compare/0.5.0...1.0.0) (2023-07-04)
+
+
+### Features
+
+* 发布 1.0.0 正式版本 ([f0ae74c](https://github.com/yaohaixiao/subscribers.js/commit/f0ae74cc7418605ec65bea303cbfce1ece1de1c2))
+
+
+
 # [0.5.0](https://github.com/yaohaixiao/subscribers.js/compare/0.4.0...0.5.0) (2023-04-12)
 
 

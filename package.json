@@ -1,6 +1,6 @@
 {
   "name": "@yaohaixiao/subscribers.js",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "description": "subscribers.js - 小巧且实用的 JavaScript 发布/订阅工具库！",
   "main": "./subscribers.min.js",
   "scripts": {
