@@ -2,10 +2,10 @@ import _subscribers from './_subscribers'
 import hasOwn from './utils/hasOwn'
 
 /**
- * 判断是否存在特定 topic 指定的订阅者信息
+ * 判断是否存在与给定 topic 完全匹配的订阅者信息
  * ========================================================================
  * @method _hasDirectSubscribersFor
- * @param {String} topic - （必须）主题名称
+ * @param {String} topic - （必须）订阅主题字符串
  * @returns {Boolean}
  */
 const _hasDirectSubscribersFor = (topic) => {

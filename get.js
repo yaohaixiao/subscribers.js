@@ -10,8 +10,6 @@ import _getSubscriberByToken from './_getSubscriberByToken'
  * ========================================================================
  * @method get
  * @param {String} [topic] - （可选）主题名称或者订阅 token 值
- *                            传递 topic 参数，返回包含 topic 主题的订阅者信息
- *                            不传递 topic 参数，返回全部订阅者信息
  * @returns {Array|Object}
  */
 const get = (topic) => {

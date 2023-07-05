@@ -1,7 +1,7 @@
 # subscribers.js
 
 [![npm version](https://img.shields.io/npm/v/@yaohaixiao/subscribers.js)](https://www.npmjs.com/package/@yaohaixiao/subscribers.js)
-[![Github file size](https://img.shields.io/github/size/yaohaixiao/subscribers.js/dist/subscribers.min.js.svg)](https://github.com/yaohaixiao/subscribers.js/blob/master/dist/subscribers.min.js)
+[![Github file size](https://img.shields.io/github/size/yaohaixiao/subscribers.js/subscribers.min.js.svg)](https://github.com/yaohaixiao/subscribers.js/blob/master/subscribers.min.js)
 [![prettier code style](https://img.shields.io/badge/code_style-prettier-07b759.svg)](https://prettier.io)
 [![Coverage](https://codecov.io/gh/yaohaixiao/delegate.js/branch/main/graph/badge.svg)](https://codecov.io/gh/yaohaixiao/subscribers.js)
 [![npm downloads](https://img.shields.io/npm/dm/@yaohaixiao/subscribers.js)](https://npmcharts.com/compare/@yaohaixiao/subscribers.js?minimal=true)
@@ -9,10 +9,9 @@
 
 subscribers.js - 小巧且实用的 JavaScript 发布/订阅工具库。
 
-
 ## 项目初衷
 
-编写 subscribers.js 的主要在日常的 JavaScript 开发中经常需要使用到发布/订阅模式。所以自己也整理了一个。虽然简单，但基本的功能都有了，还是挺好用的。这个项目的 API 文档就使用到了 subscribers.js。
+编写 subscribers.js 主要是在日常的 JavaScript 开发中经常需要使用到发布/订阅模式。所以自己也整理了一个。虽然简单，但基本的功能都有了，还是挺好用的。这个项目的 API 文档就使用到了 subscribers.js。
 
 
 ## Features
@@ -21,7 +20,7 @@ subscribers.js - 小巧且实用的 JavaScript 发布/订阅工具库。
 - 基于 topic 主题的消息，且支持命名空间的订阅/发布；
 - 支持异/同步 发布消息；
 - 支持 UMD 规范，同时也提供 ES6 模块调用；
-- API 接口调用简单便捷；
+- API 接口易于理解和调用简单；
 
 
 ## Browsers support
@@ -210,12 +209,59 @@ subscribers.emit('author')
 subscribers.emit('author')
 ```
 
+### all(handler)
+
+all() 方法用于订阅所有主题消息发布，任何消息发布都会执行 handler() 处理器。
+
+#### Parameters
+
+##### handler
+
+Type: `Function`
+
+Default: ``
+
+（必须）处理器函数。
+
+#### Returns
+
+Type: `String`
+
+唯一的 token 字符串，例如：'guid-1'。
+
+```js
+import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+const handler = (msg) => {
+  console.log(`handler：${msg}`)
+}
+
+const callback = (msg) => {
+  console.log(`handler：${msg}`)
+}
+
+subscribers.on('author', handler)
+subscribers.on('career', handler)
+
+// 监听所有消息
+subscribers.all(callback)
+
+// 发布消息
+subscribers.emit('author', 'Robert')
+// -> 'handler：Robert'
+// 每次都会触发 all() 方法的订阅处理方法
+// -> 'callback：Robert'
+subscribers.emit('career', 'Programmer')
+// -> 'handler：Programmer'
+// -> 'callback：Programmer'
+```
+
 
 #### emit(topic, data[, async = true])
 
 emit() 用于发布订阅主题信息。
 
-subscribers.js 默认是采用异步方式发布的。以确保在消费者处理主题时，主题的发起者不会被阻止。 当然 emit() 方法也支持同步主题发布。
+subscribers.js 参考了（[PubSubJS](https://github.com/mroderick/PubSubJS)）默认是采用异步方式发布的。以确保在消费者处理主题时，主题的发起者不会被阻止。 当然 emit() 方法也支持同步方式（浏览器环境下比较适合）发布主题。
 
 #### Parameters
 

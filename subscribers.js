@@ -1,39 +1,15 @@
 import emit from './emit'
 import notify from './notify'
 import on from './on'
-import off from './off'
 import once from './once'
-import get from './get'
-import has from './has'
+import all from './all'
+import off from './off'
 import remove from './remove'
 import clear from './clear'
+import get from './get'
+import has from './has'
 
 const subscribers = {
-  /**
-   * 订阅主题，并给出处理器函数
-   * ========================================================================
-   * @method on
-   * @param {String} topic - （必须）主题名称
-   * @param {Function} handler - （必须）主题的处理器函数
-   * @return {String|Boolean} -
-   */
-  on(topic, handler) {
-    return on(topic, handler)
-  },
-
-  /**
-   * 订阅主题，并给出处理器函数，接受到消息后，仅执行一次
-   * ========================================================================
-   * @method once
-   * @see once
-   * @param {String} topic - （必须）主题名称
-   * @param {Function} handler - （必须）主题的处理器函数
-   * @return {String|Boolean}
-   */
-  once(topic, handler) {
-    return once(topic, handler)
-  },
-
   /**
    * 发布订阅主题信息
    * ========================================================================
@@ -67,6 +43,43 @@ const subscribers = {
   },
 
   /**
+   * 订阅主题，并给出处理器函数
+   * ========================================================================
+   * @method on
+   * @param {String} topic - （必须）主题名称
+   * @param {Function} handler - （必须）主题的处理器函数
+   * @return {String|Boolean} -
+   */
+  on(topic, handler) {
+    return on(topic, handler)
+  },
+
+  /**
+   * 订阅主题，并给出处理器函数，接受到消息后，仅执行一次
+   * ========================================================================
+   * @method once
+   * @see once
+   * @param {String} topic - （必须）主题名称
+   * @param {Function} handler - （必须）主题的处理器函数
+   * @return {String|Boolean}
+   */
+  once(topic, handler) {
+    return once(topic, handler)
+  },
+
+  /**
+   * 订阅所有主题消息发布，任何消息发布都会执行 handler() 处理器
+   * ========================================================================
+   * @method all
+   * @see all
+   * @param {Function} handler - （必须）处理器函数
+   * @return {String|Boolean}
+   */
+  all(handler) {
+    return all(handler)
+  },
+
+  /**
    * 取消订阅主题
    * ========================================================================
    * @method off
@@ -77,6 +90,34 @@ const subscribers = {
    */
   off(topic, token) {
     off(topic, token)
+
+    return this
+  },
+
+  /**
+   * 删除特定 topic 或者多个主题的订阅者信息
+   * ========================================================================
+   * @method remove
+   * @see _removeSubscriber
+   * @see _removeSubscribers
+   * @param {String|Array} topic - （必须）主题名称
+   * @returns {subscribers}
+   */
+  remove(topic) {
+    remove(topic)
+
+    return this
+  },
+
+  /**
+   * 清理所有订阅者（主题和处理器的）信息
+   * ========================================================================
+   * @method clear
+   * @see clear
+   * @returns {subscribers}
+   */
+  clear() {
+    clear()
 
     return this
   },
@@ -106,34 +147,6 @@ const subscribers = {
    */
   has(topic, isDirect = true) {
     return has(topic, isDirect)
-  },
-
-  /**
-   * 删除特定 topic 或者多个主题的订阅者信息
-   * ========================================================================
-   * @method remove
-   * @see _removeSubscriber
-   * @see _removeSubscribers
-   * @param {String|Array} topic - （必须）主题名称
-   * @returns {subscribers}
-   */
-  remove(topic) {
-    remove(topic)
-
-    return this
-  },
-
-  /**
-   * 清理所有订阅者（主题和处理器的）信息
-   * ========================================================================
-   * @method clear
-   * @see clear
-   * @returns {subscribers}
-   */
-  clear() {
-    clear()
-
-    return this
   }
 }
 

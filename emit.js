@@ -1,6 +1,7 @@
 import _subscribers from './_subscribers'
 import has from './has'
 import _hasDirectSubscribersFor from './_hasDirectSubscribersFor'
+import isTypedArray from './utils/isTypedArray'
 
 /**
  * （异步）发布订阅主题信息
@@ -19,7 +20,10 @@ const emit = (topic, data, async = true) => {
     }
 
     _subscribers[topic].forEach((subscriber) => {
-      subscriber.callback(data)
+      // 针对 mqtt 消息服务返回的 Uint8Array 类似的 typed arrays 格式的数据
+      // 采用 toString() 方法转化为普通（JSON）字符串
+      const message = isTypedArray(data) ? data.toString() : data
+      subscriber.callback(message)
     })
   }
   const deliver = () => {
@@ -33,7 +37,10 @@ const emit = (topic, data, async = true) => {
       execute(subscriber)
     }
 
+    // 执行 topic 对应的处理器
     execute(topic)
+    // 执行特殊 topic：'*'（监听全部消息的发布）
+    execute('*')
   }
 
   if (!has(topic)) {

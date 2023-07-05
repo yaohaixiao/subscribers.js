@@ -1,0 +1,43 @@
+section.section
+  header.section__header
+    h3#method-all.section__h3 all(handler)
+  div.section__content
+    h4.section__h4 Description
+    p all() 方法用于订阅所有主题消息发布，任何消息发布都会执行 handler() 处理器。
+    h4.section__h4 Parameters
+    h5.section__h4 handler
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd Function
+    p （（必须）处理器函数。
+    h4.section__h4 Returns
+    dl.section__dl
+      dt.section__dt Type：
+      dd.section__dd String。
+    p 唯一的 token 字符串，例如：'guid-1'。
+    pre.section__pre
+      code.section__code.
+        import subscribers from '@yaohaixiao/subscribers.js/subscribers'
+
+        const handler = (msg) => {
+          console.log(`handler：${msg}`)
+        }
+
+        const callback = (msg) => {
+          console.log(`handler：${msg}`)
+        }
+
+        subscribers.on('author', handler)
+        subscribers.on('career', handler)
+
+        // 监听所有消息
+        subscribers.all(callback)
+
+        // 发布消息
+        subscribers.emit('author', 'Robert')
+        // -> 'handler：Robert'
+        // 每次都会触发 all() 方法的订阅处理方法
+        // -> 'callback：Robert'
+        subscribers.emit('career', 'Programmer')
+        // -> 'handler：Programmer'
+        // -> 'callback：Programmer'

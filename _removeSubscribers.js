@@ -10,13 +10,15 @@ import has from './has'
  * @returns {Boolean}
  */
 const _removeSubscribers = (topic) => {
-  if (!has(topic)) {
+  const keys = Object.keys
+
+  if (!has(topic) || keys.length < 1) {
     return false
   }
 
-  Object.keys(_subscribers).forEach((subscriber) => {
-    if (hasOwn(_subscribers, subscriber) && subscriber.indexOf(topic) === 0) {
-      delete _subscribers[subscriber]
+  keys(_subscribers).forEach((subject) => {
+    if (hasOwn(_subscribers, subject) && subject.startsWith(topic)) {
+      delete _subscribers[subject]
     }
   })
 }

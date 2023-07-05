@@ -2,10 +2,10 @@ import _subscribers from './_subscribers'
 import hasOwn from './utils/hasOwn'
 
 /**
- * 删除特定 topic 主题的订阅者信息
+ * 删除与给定 topic 相同的订阅者信息
  * ========================================================================
  * @method _removeSubscriber
- * @param {String} topic - （必须）主题名称
+ * @param {String} topic - （必须）订阅主题字符串
  * @returns {Boolean}
  */
 const _removeSubscriber = (topic) => {

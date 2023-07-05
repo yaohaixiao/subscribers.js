@@ -3,7 +3,7 @@
  * ========================================================================
  * @method guid
  * @param {String} [prefix] - 生成 id 的前缀字符串
- * @return {String} 返回一个
+ * @return {String} 返回一个表示唯一 id 的字符串
  */
 const guid = (() => {
   let id = 0

@@ -1,7 +1,7 @@
 import _subscribers from './_subscribers'
 
 /**
- * 清理所有订阅者（主题和处理器的）信息
+ * 清理所有订阅者信息
  * ========================================================================
  * @method clear
  */
@@ -12,8 +12,8 @@ const clear = () => {
     return false
   }
 
-  keys.forEach((prop) => {
-    delete _subscribers[prop]
+  keys.forEach((subject) => {
+    delete _subscribers[subject]
   })
 }
 

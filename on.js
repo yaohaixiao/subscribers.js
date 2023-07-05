@@ -12,18 +12,19 @@ import guid from './utils/guid'
  */
 const on = (topic, handler) => {
   const token = guid()
+  let subject = typeof topic === 'symbol' ? topic.toString() : topic
 
   if (!isFunction(handler)) {
     return false
   }
 
   /* istanbul ignore else */
-  if (!_subscribers[topic]) {
-    _subscribers[topic] = []
+  if (!_subscribers[subject]) {
+    _subscribers[subject] = []
   }
 
-  _subscribers[topic].push({
-    topic,
+  _subscribers[subject].push({
+    topic: subject,
     callback: handler,
     token
   })
