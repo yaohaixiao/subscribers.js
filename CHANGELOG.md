@@ -1,3 +1,14 @@
+# [1.1.0](https://github.com/yaohaixiao/subscribers.js/compare/1.0.0...1.1.0) (2023-07-05)
+
+
+### Features
+
+* 添加 all() 方法，支持订阅所有消息 ([b5a9d94](https://github.com/yaohaixiao/subscribers.js/commit/b5a9d94d4601af38e5afa8b0925a7aada516c3c0))
+  * 添加 all() 方法
+  * 调整 emit() 方法，支持触发所有消息的订阅处理方法
+* 调整 emit() 方法，针对 typed arrays 类型数据，使用 toString() 方法，将数据传话为普通（JSON）字符串
+
+
 # [1.0.0](https://github.com/yaohaixiao/subscribers.js/compare/0.5.0...1.0.0) (2023-07-04)
 
 
