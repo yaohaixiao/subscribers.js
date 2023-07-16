@@ -60,7 +60,8 @@ const sync = () => {
       })
     },
     {
-      root: $main
+      root: $main,
+      rootMargin: '0px 0px -90% 0px'
     }
   )
 
