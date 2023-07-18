@@ -23,7 +23,7 @@ const emit = (topic, data, async = true) => {
       // 针对 mqtt 消息服务返回的 Uint8Array 类似的 typed arrays 格式的数据
       // 采用 toString() 方法转化为普通（JSON）字符串
       const message = isTypedArray(data) ? data.toString() : data
-      subscriber.callback(message)
+      subscriber.callback.call(subscriber.context || subscriber, message)
     })
   }
   const deliver = () => {

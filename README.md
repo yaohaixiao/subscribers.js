@@ -82,6 +82,11 @@ import subscribers from '@yaohaixiao/subscribers.js/subscribers.core'
 ```js
 import subscribers from '@yaohaixiao/subscribers.js/subscribers'
 
+const Person = {
+    name: 'robert',
+    age: 24
+}
+
 // 创建订阅主题的函数
 const handler = (msg, data) => {
     console.log( msg, data )
@@ -90,6 +95,8 @@ const handler = (msg, data) => {
 /* ==== 订阅主题 ==== */
 // 将函数添加到特定主题的订阅者列表中
 subscribers.on('log', handler)
+// 设置 handler 的执行上下文为 Person
+subscribers.on('log', handler, Person)
 // 采用命名空间式的消息主题
 subscribers.on('log.info', handler)
 subscribers.on('log.info.update', handler)
@@ -152,7 +159,14 @@ const handler = () => {
   console.log('author is Robert')
 }
 
+const Person = {
+  name: 'robert',
+  age: 24
+}
+
 subscribers.on('author', handler)
+// 设置 handler 的执行上下文为 Person
+subscribers.on('log', handler, Person)
 
 // 支持命名空间形式的主题的订阅
 subscribers.on('author.career', handler)
