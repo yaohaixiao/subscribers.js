@@ -1,3 +1,12 @@
+# [1.2.0](https://github.com/yaohaixiao/subscribers.js/compare/1.1.0...1.2.0) (2023-07-18)
+
+
+### Features
+
+* 调整 on() 和 once() 方法，添加设置 context 参数，指定执行上下文 ([2abb405](https://github.com/yaohaixiao/subscribers.js/commit/2abb405e844bffbe91ab2288e296aaf9c8ac7090))
+
+
+
 # [1.1.0](https://github.com/yaohaixiao/subscribers.js/compare/1.0.0...1.1.0) (2023-07-05)
 
 
