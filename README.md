@@ -1,17 +1,17 @@
 # subscribers.js
 
 [![npm version](https://img.shields.io/npm/v/@yaohaixiao/subscribers.js)](https://www.npmjs.com/package/@yaohaixiao/subscribers.js)
-[![Github file size](https://img.shields.io/github/size/yaohaixiao/subscribers.js/subscribers.min.js.svg)](https://github.com/yaohaixiao/subscribers.js/blob/master/subscribers.min.js)
+![Gzip size](http://img.badgesize.io/https://cdn.jsdelivr.net/gh/yaohaixiao/subscribers.js/subscribers.min.js?compression=gzip&label=gzip%20size)
 [![prettier code style](https://img.shields.io/badge/code_style-prettier-07b759.svg)](https://prettier.io)
 [![Coverage](https://codecov.io/gh/yaohaixiao/delegate.js/branch/main/graph/badge.svg)](https://codecov.io/gh/yaohaixiao/subscribers.js)
-[![npm downloads](https://img.shields.io/npm/dm/@yaohaixiao/subscribers.js)](https://npmcharts.com/compare/@yaohaixiao/subscribers.js?minimal=true)
+[![npm downloads](https://img.shields.io/npm/dt/@yaohaixiao/subscribers.js)](https://npmcharts.com/compare/@yaohaixiao/subscribers.js?minimal=true)
 [![MIT License](https://img.shields.io/github/license/yaohaixiao/subscribers.js.svg)](https://github.com/yaohaixiao/delegate.js/blob/master/LICENSE)
 
 subscribers.js - 小巧且实用的 JavaScript 发布/订阅工具库。
 
 ## 项目初衷
 
-编写 subscribers.js 主要是在日常的 JavaScript 开发中经常需要使用到发布/订阅模式。所以自己也整理了一个。虽然简单，但基本的功能都有了，还是挺好用的。这个项目的 API 文档就使用到了 subscribers.js。
+编写 subscribers.js 主要是在日常的开发中经常需要使用到发布/订阅模式，同时也为初学 JavaScript 的朋友了解 [JavaScript中的发布订阅模式实现与应用](http://www.yaohaixiao.com/blog/publish-subscribe-pattern-in-javascript/) 所以自己也整理了一个。虽然简单，但基本的功能都有了，还是挺好用的。这个项目的 API 文档就使用到了 subscribers.js。
 
 
 ## Features
