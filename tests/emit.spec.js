@@ -1,6 +1,6 @@
-import emit from '../emit'
-import notify from '../notify'
-import on from '../on'
+import emit from '@/emit'
+import notify from '@/notify'
+import on from '@/on'
 
 describe('emit() 方法', () => {
   let author = ''

@@ -1,7 +1,7 @@
-import off from '../off'
-import emit from '../emit'
-import on from '../on'
-import get from '../get'
+import off from '@/off'
+import emit from '@/emit'
+import on from '@/on'
+import get from '@/get'
 
 describe('off() 方法', () => {
   let author = ''
