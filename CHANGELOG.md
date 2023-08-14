@@ -1,6 +1,11 @@
 ## [1.2.1](https://github.com/yaohaixiao/subscribers.js/compare/1.2.0...1.2.1) (2023-08-14)
 
 
+### Features
+
+* 调整 core 模块的代码结构 ([9ce2674](https://github.com/yaohaixiao/subscribers.js/commit/9ce267429a55818749a9892903464c608b1060f6))
+
+
 
 # [1.2.0](https://github.com/yaohaixiao/subscribers.js/compare/1.1.0...1.2.0) (2023-07-18)
 
