@@ -1,3 +1,7 @@
+## [1.2.1](https://github.com/yaohaixiao/subscribers.js/compare/1.2.0...1.2.1) (2023-08-14)
+
+
+
 # [1.2.0](https://github.com/yaohaixiao/subscribers.js/compare/1.1.0...1.2.0) (2023-07-18)
 
 

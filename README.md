@@ -74,7 +74,7 @@ import subscribers from '@yaohaixiao/subscribers.js/subscribers'
 // on()
 // emit()
 // off()
-import subscribers from '@yaohaixiao/subscribers.js/subscribers.core'
+import subscribers from '@yaohaixiao/subscribers.js/core'
 ```
 
 ## Usage
@@ -127,6 +127,8 @@ subscribers.js 中封装了一系列常用方法，并且适用起来非常方�
 ### on(topic, handler)
 
 订阅主题，并给出处理器函数。
+
+Category: `Core`
 
 #### Parameters
 
@@ -277,6 +279,8 @@ emit() 用于发布订阅主题信息。
 
 subscribers.js 参考了（[PubSubJS](https://github.com/mroderick/PubSubJS)）默认是采用异步方式发布的。以确保在消费者处理主题时，主题的发起者不会被阻止。 当然 emit() 方法也支持同步方式（浏览器环境下比较适合）发布主题。
 
+Category: `Core`
+
 #### Parameters
 
 ##### topic
@@ -381,6 +385,8 @@ subscribers.notify('years', 19) // -> 19
 ### off(topic[, token])
 
 off() 方法用来取消订阅主题。
+
+Category: `Core`
 
 #### Parameters
 

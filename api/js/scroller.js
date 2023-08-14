@@ -1,4 +1,4 @@
-import $observer from '../../subscribers.core'
+import $observer from '../../core'
 
 const $main = document.querySelector('#main')
 const MIN = 0

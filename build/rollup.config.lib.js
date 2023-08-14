@@ -24,7 +24,7 @@ export default [
   },
   // For core functions module
   {
-    input: './subscribers.core.js',
+    input: './core/index.js',
     output: {
       name: 'subscribers',
       file: './subscribers.core.min.js',
