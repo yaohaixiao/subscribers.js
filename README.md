@@ -4,7 +4,7 @@
 ![Gzip size](http://img.badgesize.io/https://cdn.jsdelivr.net/gh/yaohaixiao/subscribers.js/subscribers.min.js?compression=gzip&label=gzip%20size)
 [![prettier code style](https://img.shields.io/badge/code_style-prettier-07b759.svg)](https://prettier.io)
 [![Coverage](https://codecov.io/gh/yaohaixiao/delegate.js/branch/main/graph/badge.svg)](https://codecov.io/gh/yaohaixiao/subscribers.js)
-[![npm downloads](https://img.shields.io/npm/dm/@yaohaixiao/subscribers.js)](https://npmcharts.com/compare/@yaohaixiao/subscribers.js?minimal=true)
+[![npm downloads](https://img.shields.io/npm/dt/@yaohaixiao/subscribers.js)](https://npmcharts.com/compare/@yaohaixiao/subscribers.js?minimal=true)
 [![MIT License](https://img.shields.io/github/license/yaohaixiao/subscribers.js.svg)](https://github.com/yaohaixiao/delegate.js/blob/master/LICENSE)
 
 subscribers.js - 小巧且实用的 JavaScript 发布/订阅工具库。
